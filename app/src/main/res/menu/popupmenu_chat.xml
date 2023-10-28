@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ajakobrolan"
+        android:title="Mulai Obrolan" />
+    <item
+        android:id="@+id/ajakbertanding"
+        android:title="Ajak Bertanding" />
+</menu>

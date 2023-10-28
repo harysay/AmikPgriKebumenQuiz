@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<color name="colorPrimary">#b4485f</color>
+<color name="colorPrimaryDark">#802f40</color>
+<color name="colorPrimaryText">#FFFFFF</color>
+<color name="colorSecondaryText">#C6C6C6</color>
+<color name="colorAccent">#FF4081</color>
+<color name="textColor">#000</color>
+<color name="colorButtonNormal">#009688</color>
+<color name="ripple_white">#fcfcfc</color>
+    <color name="gray">#c7c7c7</color>
+    <color name="colorBackground">#151B29</color>
+    <color name="colorYellow">#F5FA55</color>
+    <color name="btnSignUp">#23c6c8</color>
+    <color name="btnMultipleChoice">#A9d440</color>
+    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_shadow_color">#ff3493c8</color>
+    //Color Swatches provided by http://designmodo.github.io/Flat-UI/
+    <color name="fbutton_color_turquoise">#1abc9c</color>
+    <color name="fbutton_color_green_sea">#16a085</color>
+    <color name="fbutton_color_emerald">#2ecc71</color>
+    <color name="fbutton_color_nephritis">#27ae60</color>
+    <color name="fbutton_color_peter_river">#3498db</color>
+    <color name="fbutton_color_belize_hole">#2980b9</color>
+    <color name="fbutton_color_amethyst">#9b59b6</color>
+    <color name="fbutton_color_wisteria">#8e44ad</color>
+    <color name="fbutton_color_wet_asphalt">#34495e</color>
+    <color name="fbutton_color_midnight_blue">#2c3e50</color>
+    <color name="fbutton_color_sun_flower">#f1c40f</color>
+    <color name="fbutton_color_orange">#f39c12</color>
+    <color name="fbutton_color_carrot">#e67e22</color>
+    <color name="fbutton_color_pumpkin">#d35400</color>
+    <color name="fbutton_color_alizarin">#e74c3c</color>
+    <color name="fbutton_color_pomegranate">#c0392b</color>
+    <color name="fbutton_color_clouds">#ecf0f1</color>
+    <color name="fbutton_color_silver">#bdc3c7</color>
+    <color name="fbutton_color_concrete">#95a5a6</color>
+    <color name="fbutton_color_asbestos">#7f8c8d</color>
+    <color name="fbutton_color_transparent">@android:color/transparent</color>
+    <!--//socialmedia-->
+    <color name="primary">#0097D3</color>
+    <color name="primary_dark">#005B7F</color>
+    <color name="primary_light">#D7CCC8</color>
+    <color name="dart_transparent">#81000000</color>
+    <color name="primary_dark_text">#28333D</color>
+    <color name="secondary_text">#434343</color>
+    <color name="secondary_light">#979797</color>
+
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+
+    <color name="custom_divider_color">#dfdfdf</color>
+    <color name="highlight_text">#17a1d7</color>
+
+    <color name="send_button_color">@color/primary</color>
+
+    <color name="light_gray">#d8d6d5</color>
+    <color name="white">#ffffff</color>
+    <color name="posts_counter_bg">#df3e3e3e</color>
+
+    <color name="like_icon_activated">#FF5252</color>
+    <color name="icons_counter_color">#828181</color>
+    <color name="circle_image_shadow">#8b8b8b</color>
+
+    <color name="send_comment_button_activated">#0097d3</color>
+    <color name="send_comment_button_deactivated">#7fcbe9</color>
+
+    <color name="facebook_button_color">#3b5999</color>
+    <color name="facebook_button_color_pressed">#2f477a</color>
+    <color name="google_button_color">#d44837</color>
+    <color name="google_button_color_pressed">#FFA43528</color>
+    <color name="button_pressed_text_color">#bcbcbc</color>
+
+    <color name="follow_button_color">#0097D3</color>
+    <color name="follow_button_pressed_color">#0087BC</color>
+    <color name="follow_button_light_color">@color/white</color>
+    <color name="follow_button_light_pressed_color">#f7f7f7</color>
+
+    <color name="colorAccentAlpha60">#96ff4081</color>
+    <color name="warnashareresult">#d9a950</color>
+</resources>
