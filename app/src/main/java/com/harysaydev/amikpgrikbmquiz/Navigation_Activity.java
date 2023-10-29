@@ -80,7 +80,7 @@ public class Navigation_Activity extends AppCompatActivity
         String nav_header_email = sharedPreferences.getString("email", "abc@gmail.com");
         String nav_header_gender = sharedPreferences.getString("gender", "Male");
         nope = sharedPreferences.getString("phone","");
-        cekHakAksesSoal(nope);
+
         View header = navigationView.getHeaderView(0);//Used to get a reference to navigation header
         nav_header_nam = (TextView) header.findViewById(R.id.nav_header_name);
         nav_header_emal = (TextView) header.findViewById(R.id.nav_header_email);
@@ -632,62 +632,33 @@ public class Navigation_Activity extends AppCompatActivity
 //        }
     }
 
-    private void cekHakAkses(){
-        cekVerifikasiDatabaseReference.child("users").child(nope).child("user_profession").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
-                String getNilai = snapshot.getValue().toString();
-                if (getNilai.equals("mhs")){
-                    bolehAksesSoal = "boleh";
-                }else {
-                    bolehAksesSoal = "tidak";
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-    private String cekHakAksesSoal(String nohp){
-        //final String[] profesi = new String[1];
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference profesiUser = ref.child("users").child(nohp).child("user_profession");
-        profesiUser.addListenerForSingleValueEvent(new ValueEventListener() {
+    private String cekHakAksesSoal(String nohp,String kodemakul){
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(nohp);
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String profesi = dataSnapshot.getValue(String.class);
-                bolehAksesSoal = profesi;
-//                if (profesi.equals("mhs")){
-//                    bolehAksesSoal = "boleh";
-//                }else {
-//                    bolehAksesSoal = "tidak";
-//                }
+                if (dataSnapshot.child("yangpernahdiikuti").exists()) {
+                    // Jika "yangpernahdiikuti" sudah ada
+                    if(dataSnapshot.child("yangpernahdiikuti/"+kodemakul).exists()){
+                        boolean rplValue = dataSnapshot.child("yangpernahdiikuti/"+kodemakul).getValue(Boolean.class);
+                        if (rplValue) {
+                            // Jika rpl bernilai true, lakukan sesuatu
+                            bolehAksesSoal = "tidak";
+                            System.out.println("Data 'rpl' sudah ada dan bernilai true");
+                        }
+                    }else {
+                        bolehAksesSoal = "boleh";
+                    }
+
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // Tangani kesalahan jika terjadi
+                System.out.println("Error: " + databaseError.getMessage());
             }
         });
-
-//        cekVerifikasiDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                String getNilai = dataSnapshot.child("users").child(nope).child("user_profession").getValue(String.class);
-//                if (getNilai.equals("mhs")){
-//                    bolehAksesSoal = "boleh";
-//                }else {
-//                    bolehAksesSoal = "tidak";
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
         return bolehAksesSoal;
     }
 
@@ -989,6 +960,7 @@ public class Navigation_Activity extends AppCompatActivity
     }
 
     private boolean getKodeAkses(String kodeInputan,View v,String makul, String valueMakulIntent, String sekaliikutkode){
+        cekHakAksesSoal(nope,valueMakulIntent);
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference(); // Mendapatkan referensi ke Realtime Database
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1030,7 +1002,7 @@ public class Navigation_Activity extends AppCompatActivity
                                 }
                             }, 1000);
                         }else if(bolehAksesSoal.equals("tidak")){
-                            Toast.makeText(Navigation_Activity.this, "Maaf Anda tidak diizinkan mengikuti soal ini", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti soal ini untuk kedua kalinya", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {

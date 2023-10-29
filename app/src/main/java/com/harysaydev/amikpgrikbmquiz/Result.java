@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +39,8 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Result extends AppCompatActivity implements View.OnClickListener {
     TextView judulHasil, correct, incorrect, attempted, score, nilai, you,namapengguna;
@@ -72,6 +77,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         attempt = intent.getIntExtra("attemp", 0);
         jumSoal = intent.getIntExtra("jumlahsoal",0);
         String kodeMakul = intent.getStringExtra("kodemakul");
+        tambahDaftarMengikuti(kodeMakul);
         databaseFb = FirebaseDatabase.getInstance();
         tabel_skor  = databaseFb.getReference("ResultPerTest");
 
@@ -241,8 +247,27 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
                 //Toast.makeText(this, "Tunggu menu share muncul!", Toast.LENGTH_SHORT).show();
                 //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 //takeScreenshot(ScreenshotType.FULL);
-                bitmap = ScreenshotUtil.getInstance().takeScreenshotForScreen(Result.this); // Take ScreenshotUtil for activity
-                requestPermissionAndSave();
+                float nilaiAkhir = (float)cor / jumSoal * 100;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    // Versi Android 13 atau di atasnya (Android T atau di atasnya)
+                    // Lakukan sesuatu untuk Android 13 atau di atasnya
+                    System.out.println("Perangkat berjalan pada Android 13 atau di atasnya");
+                    Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+                    whatsappIntent.setType("text/plain");
+                    whatsappIntent.setPackage("com.whatsapp");
+                    whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Saya "+namapengguna.getText().toString()+" mendapat nilai akhir"+nilaiAkhir+" dengan jumlah benar ("+cor+")");
+                    try {
+                        startActivity(whatsappIntent);
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(Result.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Versi Android di bawah 13 (sebelum Android 13)
+                    System.out.println("Perangkat berjalan pada versi Android sebelum Android 13");
+                    bitmap = ScreenshotUtil.getInstance().takeScreenshotForScreen(Result.this); // Take ScreenshotUtil for activity
+                    requestPermissionAndSave();
+                }
+
                 //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.warnashareresult));
                 break;
         }
@@ -317,7 +342,25 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         //Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
 
     }
+    public void tambahDaftarMengikuti(String kodemakul){
+        if (nomor_phone != null) {
+            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(nomor_phone);
+            // Siapkan data yang ingin Anda tambahkan
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("yangpernahdiikuti/"+kodemakul, true); // Menambah informasi kodemakul
 
+            // Update data di Firebase Database
+            databaseRef.updateChildren(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        // Proses berhasil
+                        System.out.println("Informasi "+kodemakul+" berhasil ditambahkan.");
+                    })
+                    .addOnFailureListener(e -> {
+                        // Proses gagal
+                        System.out.println("Gagal menambahkan informasi "+kodemakul+": " + e.getMessage());
+                    });
+        }
+    }
     public void showToast() {
         // Set the toast and duration
         int toastDurationInMilliSeconds = 3000; //5000 = 5 detik

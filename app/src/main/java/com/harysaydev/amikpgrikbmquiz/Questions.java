@@ -1521,7 +1521,7 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
             isScreenCaptured = true;
             if (isScreenCaptured) {
                 // Aksi ketika tangkapan layar terdeteksi
-                Toast.makeText(this, "Fokus berakhir", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Fokus berakhir, soal selesai", Toast.LENGTH_LONG).show();
                 actionAfterFinishCount();
             }
         }
