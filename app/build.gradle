@@ -23,8 +23,8 @@ android {
         applicationId "com.harysaydev.amikpgrikbmquiz"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 24
-        versionName "b1.26122022"
+        versionCode 25
+        versionName "b25.30102023"
         multiDexEnabled true
     }
 
@@ -34,14 +34,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
-            proguardFile 'C:/data/Non-Kominfo/AmikPgriKebQuiz/app/proguard-android.txt'
+            proguardFile 'D:/HARI/Kampus/Aplikasi/AmikPgriKebQuiz/app/proguard-android.txt'
         }
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
-            proguardFile 'C:/data/Non-Kominfo/AmikPgriKebQuiz/app/proguard-android.txt'
+            proguardFile 'D:/HARI/Kampus/Aplikasi/AmikPgriKebQuiz/app/proguard-android.txt'
         }
     }
     packagingOptions {

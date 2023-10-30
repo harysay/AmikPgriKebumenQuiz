@@ -37,7 +37,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="30dp"
             android:maxLength="15"
-            android:text="Welcome !"
+            android:text="Welcome Back !"
             android:textAlignment="center"
             android:textColor="#fff"
             android:textSize="30sp" />
@@ -96,9 +96,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/relative2"
             android:layout_marginLeft="25dp"
-            android:clickable="true"
-            android:onClick="showDialog"
             android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:minHeight="48dp"
+            android:onClick="showDialog"
             android:text="Forgot Password !!"
             android:textColor="#AAFAC8"
             android:textStyle="bold" />

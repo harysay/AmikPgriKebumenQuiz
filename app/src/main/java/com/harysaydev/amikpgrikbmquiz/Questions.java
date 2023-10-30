@@ -137,7 +137,6 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         setSupportActionBar(toolbar);
         backsebelummulai = 1;
         variable = 1;
-        showLockScreenDialog();
         sharedku = getSharedPreferences("Content_main", Context.MODE_PRIVATE);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -146,24 +145,29 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         if(get.equals("strukturdata")){
             idMapel = "1";
             namaMapel = "Struktur Data";
+            showLockScreenDialog();
         } else if(get.equals("bahasainggris")){
             idMapel = "2";
             namaMapel = "Bahasa Inggris";
         }else if(get.equals("pemrogramanterstruktur")){
             idMapel = "3";
             namaMapel = "Pemrograman Terstruktur";
+            showLockScreenDialog();
         }else if(get.equals("pengetahuanumum")){
             idMapel = "4";
             namaMapel = "Pengetahuan Umum";
         }else if(get.equals("pbo")){
             idMapel = "5";
             namaMapel = "Pemrograman Berorientasi Objek";
+            showLockScreenDialog();
         }else if(get.equals("kecerdasan")){
             idMapel = "6";
             namaMapel = "Kecerdasan Buatan";
+            showLockScreenDialog();
         }else if(get.equals("rpl")){
             idMapel = "7";
             namaMapel = "Rekayasa Perangkat Lunak";
+            showLockScreenDialog();
         }else if(get.equals("kebangsaan")){
             idMapel = "8";
             namaMapel = "Wawasan Kebangsaan";
@@ -188,18 +192,22 @@ public class Questions extends AppCompatActivity implements View.OnClickListener
         }else if(get.equals("grafikakomp")){
             idMapel = "15";
             namaMapel = "Grafika Komputer";
+            showLockScreenDialog();
         }else if(get.equals("komputer")){
             idMapel = "16";
             namaMapel = "Komputer";
         }else if(get.equals("pemrogramaninternet")){
             idMapel = "17";
             namaMapel = "Pemrograman Internet";
+            showLockScreenDialog();
         }else if(get.equals("jaringankomputer")){
             idMapel = "18";
             namaMapel = "Jaringan Komputer";
+            showLockScreenDialog();
         }else if(get.equals("desainweb")){
             idMapel = "19";
             namaMapel = "Desain Web";
+            showLockScreenDialog();
         }else{
             idMapel = "0";
         }

@@ -9,7 +9,7 @@
     android:background="@color/colorAccent"
     app:behavior_hideable="false"
     app:behavior_peekHeight="100dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

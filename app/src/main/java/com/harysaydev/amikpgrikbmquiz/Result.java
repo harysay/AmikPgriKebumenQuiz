@@ -1,7 +1,10 @@
 package com.harysaydev.amikpgrikbmquiz;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,6 +16,7 @@ import android.os.Environment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.harysaydev.amikpgrikbmquiz.helper.CheckNetwork;
 import com.harysaydev.amikpgrikbmquiz.screenshoot.FileUtil;
 import com.harysaydev.amikpgrikbmquiz.screenshoot.ScreenshotUtil;
 import com.karumi.dexter.Dexter;
@@ -43,9 +48,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Result extends AppCompatActivity implements View.OnClickListener {
-    TextView judulHasil, correct, incorrect, attempted, score, nilai, you,namapengguna;
+    TextView judulHasil,totalSoal, correct, incorrect, attempted, score, nilai, you,namapengguna;
     Button fullPageScreenshot;
     private LinearLayout rootContent;
+    private static final String TAG = "ResultMenu";
     FirebaseDatabase databaseFb;
     DatabaseReference tabel_skor;
     String nomor_phone,header_name;
@@ -56,6 +62,8 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
     private Toast mToastToShow;
     private Bitmap bitmap;
     Date currentTime = Calendar.getInstance().getTime();
+    String kodeMakul;
+    float nilaiAkhirUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +84,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         cor = intent.getIntExtra("correct", 0);
         attempt = intent.getIntExtra("attemp", 0);
         jumSoal = intent.getIntExtra("jumlahsoal",0);
-        String kodeMakul = intent.getStringExtra("kodemakul");
+        kodeMakul = intent.getStringExtra("kodemakul");
         tambahDaftarMengikuti(kodeMakul);
         databaseFb = FirebaseDatabase.getInstance();
         tabel_skor  = databaseFb.getReference("ResultPerTest");
@@ -88,6 +96,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         fullPageScreenshot = (Button) findViewById(R.id.shareResult);
         //imageView = (ImageView) findViewById(R.id.image_viewScreenshoot);
         judulHasil = (TextView) findViewById(R.id.judulHasil);
+        totalSoal = (TextView) findViewById(R.id.totalsoal);
         correct = (TextView) findViewById(R.id.correct);
         incorrect = (TextView) findViewById(R.id.incorrect);
         attempted = (TextView) findViewById(R.id.attempted);
@@ -100,26 +109,181 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         fullPageScreenshot.setOnClickListener(this);
         judulHasil.setText("Statistik "+buatJudul);
         namapengguna.setText(namapeng +"("+sharedPreferences.getString("kodeunik","tidak terdeteksi")+")");
+        totalSoal.setText("  " +jumSoal);
         attempted.setText("  " + attempt);
         correct.setText("  " + cor);
         incorrect.setText("  " + incorr);
         score.setText("Points  :    " + scor);
-        float x1 = (float)cor / jumSoal * 100 ;
+        nilaiAkhirUser = (float)cor / jumSoal * 100 ; //gunakan jumlah soal sebagai pembagi karena bisa jadi user baru mengikuti 2 soal benar semua
 //        if (kodeMakul.equals("kepribadian")){
 //            x1 = (float)cor * 5 ;
 //        }else{
 //            x1 = (float)cor / attempt * 100 ;
 //        }
-        nilai.setText(String.format ("%.2f", x1));
-        if (x1 < 40)
+        nilai.setText(String.format ("%.2f", nilaiAkhirUser));
+        if (nilaiAkhirUser < 40)
             you.setText("Kamu harus belajar lagi!");
-        else if (x1 < 75)
+        else if (nilaiAkhirUser < 75)
             you.setText("Masih kurang belajar, tingkatkan lagi!");
-        else if (x1 < 90)
+        else if (nilaiAkhirUser < 90)
             you.setText("Anda Berhasil Passing Grade");
-        else if (x1 >= 90){
+        else if (nilaiAkhirUser >= 90){
             you.setText("You are a brilliant!");
         }
+        if (CheckNetwork.isInternetAvailable(Result.this)) //returns true if internet available
+        {
+            submitNilai(kodeMakul, nilaiAkhirUser);
+        }else {
+            try {
+                AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
+                alertDialog.setTitle("No Internet");
+                alertDialog.setMessage("Check your internet connectivity and try again");
+                alertDialog.setIcon(android.R.drawable.stat_sys_warning);
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int n) {
+                        // Buka pengaturan jaringan
+                        startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        dialog.cancel();
+                    }
+                });
+                alertDialog.show();
+            } catch (Exception e) {
+                Log.d(TAG, "Log tidak konek: "+e.getMessage());
+            }
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (CheckNetwork.isInternetAvailable(Result.this)) //returns true if internet available
+        {
+            // Jika pengguna kembali dengan koneksi internet, lanjutkan submit nilai
+            tambahDaftarMengikuti(kodeMakul);
+            submitNilai(kodeMakul, nilaiAkhirUser);
+
+        }else{
+            try {
+                AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
+                alertDialog.setTitle("No Internet");
+                alertDialog.setMessage("Check your internet connectivity and try again");
+                alertDialog.setIcon(android.R.drawable.stat_sys_warning);
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int n) {
+                        // Buka pengaturan jaringan
+                        startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        dialog.cancel();
+                    }
+                });
+                alertDialog.show();
+            } catch (Exception e) {
+                Log.d(TAG, "Log tidak konek: "+e.getMessage());
+            }
+        }
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.shareResult:
+                //Toast.makeText(this, "Tunggu menu share muncul!", Toast.LENGTH_SHORT).show();
+                //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                //takeScreenshot(ScreenshotType.FULL);
+                float nilaiAkhir = (float)cor / jumSoal * 100;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Saya "+namapengguna.getText().toString()+" mendapat nilai akhir "+nilaiAkhir+" dengan jumlah benar ("+cor+") dari total soal seharusnya ("+jumSoal+")");
+                    // Mengatur tipe konten ke teks
+                    sendIntent.setType("text/plain");
+                    // Mengatur paket WhatsApp untuk menentukan aplikasi yang akan menangani intent
+                    sendIntent.setPackage("com.whatsapp");
+                    try {
+                        // Memulai intent untuk berbagi ke WhatsApp
+                        startActivity(sendIntent);
+                    } catch (ActivityNotFoundException e) {
+                        // Tangani jika WhatsApp tidak terinstall
+                        Toast.makeText(this, "WhatsApp tidak terpasang pada perangkat ini", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Versi Android di bawah 13 (sebelum Android 13)
+                    System.out.println("Perangkat berjalan pada versi Android sebelum Android 13");
+                    bitmap = ScreenshotUtil.getInstance().takeScreenshotForScreen(Result.this); // Take ScreenshotUtil for activity
+                    requestPermissionAndSave();
+                }
+
+                //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.warnashareresult));
+                break;
+        }
+    }
+
+    /**
+     * Requesting storage permission
+     * Once the permission granted, screen shot captured
+     * On permanent denial show toast
+     */
+    private void requestPermissionAndSave() {
+
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        if (bitmap != null) {
+                            String path = Environment.getExternalStorageDirectory().toString() + "/result.png";
+                            FileUtil.getInstance().storeBitmap(bitmap, path);
+                            Uri imgUri = Uri.parse(path);
+                            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+                            whatsappIntent.setType("text/plain");
+                            whatsappIntent.setPackage("com.whatsapp");
+                            whatsappIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sharing_text));
+                            whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                            whatsappIntent.setType("image/png");
+                            whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            try {
+                                startActivity(whatsappIntent);
+                            } catch (android.content.ActivityNotFoundException ex) {
+                                Toast.makeText(Result.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+                            }
+                            //shareScreenshot(saveFile);//finally share screenshot
+//                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot_success) + " " + path, Toast.LENGTH_LONG).show();
+                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot_success), Toast.LENGTH_LONG).show();
+                            //shareScreenshot(saveFile);//finally share screenshot
+                        } else {
+                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        // check for permanent denial of permission
+                        if (response.isPermanentlyDenied()) {
+                            // Izin ditolak secara permanen, buka pengaturan aplikasi untuk izin yang ditolak
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+
+                            // Tampilkan pesan yang sesuai
+                            Toast.makeText(Result.this, "Izin ditolak secara permanen, harap izinkan untuk melanjutkan.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
+
+    /*  Share Screenshot  */
+    private void shareScreenshot(File file) {
+        //Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
+
+    }
+
+    private void submitNilai(String kodeMakul, float x1){
         tabel_skor.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,126 +403,43 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
             }
         });
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.shareResult:
-                //Toast.makeText(this, "Tunggu menu share muncul!", Toast.LENGTH_SHORT).show();
-                //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.light_gray));
-                //takeScreenshot(ScreenshotType.FULL);
-                float nilaiAkhir = (float)cor / jumSoal * 100;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    // Versi Android 13 atau di atasnya (Android T atau di atasnya)
-                    // Lakukan sesuatu untuk Android 13 atau di atasnya
-                    System.out.println("Perangkat berjalan pada Android 13 atau di atasnya");
-                    Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-                    whatsappIntent.setType("text/plain");
-                    whatsappIntent.setPackage("com.whatsapp");
-                    whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Saya "+namapengguna.getText().toString()+" mendapat nilai akhir"+nilaiAkhir+" dengan jumlah benar ("+cor+")");
-                    try {
-                        startActivity(whatsappIntent);
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        Toast.makeText(Result.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    // Versi Android di bawah 13 (sebelum Android 13)
-                    System.out.println("Perangkat berjalan pada versi Android sebelum Android 13");
-                    bitmap = ScreenshotUtil.getInstance().takeScreenshotForScreen(Result.this); // Take ScreenshotUtil for activity
-                    requestPermissionAndSave();
-                }
-
-                //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.warnashareresult));
-                break;
-        }
-    }
-
-    /**
-     * Requesting storage permission
-     * Once the permission granted, screen shot captured
-     * On permanent denial show toast
-     */
-    private void requestPermissionAndSave() {
-
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        if (bitmap != null) {
-                            String path = Environment.getExternalStorageDirectory().toString() + "/result.png";
-                            FileUtil.getInstance().storeBitmap(bitmap, path);
-                            Uri imgUri = Uri.parse(path);
-                            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-                            whatsappIntent.setType("text/plain");
-                            whatsappIntent.setPackage("com.whatsapp");
-                            whatsappIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sharing_text));
-                            whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
-                            whatsappIntent.setType("image/png");
-                            whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            try {
-                                startActivity(whatsappIntent);
-                            } catch (android.content.ActivityNotFoundException ex) {
-                                Toast.makeText(Result.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
-                            }
-                            //shareScreenshot(saveFile);//finally share screenshot
-//                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot_success) + " " + path, Toast.LENGTH_LONG).show();
-                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot_success), Toast.LENGTH_LONG).show();
-                            //shareScreenshot(saveFile);//finally share screenshot
-                        } else {
-                            Toast.makeText(Result.this, getString(R.string.toast_message_screenshot), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        // check for permanent denial of permission
-                        if (response.isPermanentlyDenied()) {
-                            // Izin ditolak secara permanen, buka pengaturan aplikasi untuk izin yang ditolak
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivity(intent);
-
-                            // Tampilkan pesan yang sesuai
-                            Toast.makeText(Result.this, "Izin ditolak secara permanen, harap izinkan untuk melanjutkan.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
-    }
-
-    /*  Show screenshot Bitmap */
-//    private void showScreenShotImage(Bitmap b) {
-//        imageView.setImageBitmap(b);
-//    }
-
-    /*  Share Screenshot  */
-    private void shareScreenshot(File file) {
-        //Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
-
-    }
     public void tambahDaftarMengikuti(String kodemakul){
         if (nomor_phone != null) {
-            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(nomor_phone);
-            // Siapkan data yang ingin Anda tambahkan
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("yangpernahdiikuti/"+kodemakul, true); // Menambah informasi kodemakul
-
-            // Update data di Firebase Database
-            databaseRef.updateChildren(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        // Proses berhasil
-                        System.out.println("Informasi "+kodemakul+" berhasil ditambahkan.");
-                    })
-                    .addOnFailureListener(e -> {
-                        // Proses gagal
-                        System.out.println("Gagal menambahkan informasi "+kodemakul+": " + e.getMessage());
+            if (CheckNetwork.isInternetAvailable(Result.this)) //returns true if internet available
+            {
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(nomor_phone);
+                // Siapkan data yang ingin Anda tambahkan
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("yangpernahdiikuti/"+kodemakul, true); // Menambah informasi kodemakul
+                // Update data di Firebase Database
+                databaseRef.updateChildren(updates)
+                        .addOnSuccessListener(aVoid -> {
+                            // Proses berhasil
+                            System.out.println("Informasi "+kodemakul+" berhasil ditambahkan.");
+                        })
+                        .addOnFailureListener(e -> {
+                            // Proses gagal
+                            System.out.println("Gagal menambahkan informasi "+kodemakul+": " + e.getMessage());
+                        });
+            }else {
+                try {
+                    AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
+                    alertDialog.setTitle("No Internet");
+                    alertDialog.setMessage("Check your internet connectivity and try again");
+                    alertDialog.setIcon(android.R.drawable.stat_sys_warning);
+                    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int n) {
+                            // Buka pengaturan jaringan
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            dialog.cancel();
+                        }
                     });
+                    alertDialog.show();
+                } catch (Exception e) {
+                    Log.d(TAG, "Log tidak konek: "+e.getMessage());
+                }
+            }
+
         }
     }
     public void showToast() {

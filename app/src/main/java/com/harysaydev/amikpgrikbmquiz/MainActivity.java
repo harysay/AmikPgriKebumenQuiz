@@ -221,98 +221,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-
-//            getStarted.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    save_name = edit_name.getText().toString();
-//                    //System.out.println(""+save_name);
-//                    save_email = edit_email.getText().toString();
-//                    //System.out.println(""+save_email);
-//                    save_kunc = edit_password.getText().toString();
-//                    //System.out.println(""+save_password);
-//                    save_phone = edit_phone.getText().toString();
-//                    //System.out.println(""+save_phone);
-//                    if (CheckNetwork.isInternetAvailable(MainChatActivity.this)) //returns true if internet available
-//                    {
-//                        //If and else are used to check if all the three text field are empty or not
-//                        if (save_name.equals("") || save_email.equals("") || save_kunc.equals("") || save_phone.equals("")) {
-//                            try {
-//                                Toast.makeText(MainChatActivity.this, "Silahkan isi dengan lengkap!", Toast.LENGTH_SHORT).show();
-//                            } catch (Exception e) {
-//                            }
-//                        } else {
-//
-//
-//                            progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
-//                            progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any where on screen
-//                            progressBar.setMessage("Please Wait...");//Title shown in the progress bar
-//                            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);//Style of the progress bar
-//                            progressBar.setProgress(0);//attributes
-//                            progressBar.setMax(100);//attributes
-//                            progressBar.show();//show the progress bar
-//
-//                            tabel_user.addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                    //cek apakah sudah ada di database
-//                                    if (dataSnapshot.child(save_phone).exists()) {
-//                                        if (z == 0) {
-//                                            Toast.makeText(MainChatActivity.this, "Nomor handphone sudah terdaftar, silahkan daftar dengan nomor yang lain!", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    } else {
-//                                        User user = new User(save_name, save_kunc, save_email, gender);
-//                                        tabel_user.child(save_phone).setValue(user);
-//                                        Toast.makeText(MainChatActivity.this, "Pendaftaran Berhasil!\nSedang mempersiapkan Dashboard,...", Toast.LENGTH_SHORT).show();
-//                                        z++;
-//                                        //This handler will add a delay of 3 seconds
-//                                        new Handler().postDelayed(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                                                editor.putString("name", save_name);
-//                                                editor.putString("password", save_kunc);
-//                                                editor.putString("email", save_email);
-//                                                editor.putString("phone", save_phone);
-//                                                editor.putString("gender", gender);
-//                                                editor.commit();
-//                                                //Intent start to open the navigation drawer activity
-//                                                //progressBar.cancel();//Progress bar will be cancelled (hide from screen) when this run function will execute after 3.5seconds
-//                                                Intent intent = new Intent(MainChatActivity.this, Navigation_Activity.class);
-//                                                startActivity(intent);
-//                                                finish();
-//                                            }
-//                                        }, 3500);
-//                                    }
-//                                    progressBar.dismiss();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(DatabaseError databaseError) {
-//
-//                                }
-//                            });
-//                        }
-//                    }else {
-//                        try {
-//                            AlertDialog alertDialog = new AlertDialog.Builder(MainChatActivity.this).create();
-//
-//                            alertDialog.setTitle("No Internet");
-//                            alertDialog.setMessage("Check your internet connectivity and try again");
-//                            alertDialog.setIcon(android.R.drawable.stat_sys_warning);
-//                            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int n) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//                            alertDialog.show();
-//                        } catch (Exception e) {
-//                            //Log.d(Constants.TAG, "Show Dialog: "+e.getMessage());
-//                        }
-//                    }
-//                }
-//            });
-
             punyaakun.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -430,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
             name_display = (TextView) findViewById(R.id.name_display);
             name_display.setText(name_file);
             edit_password2 = (EditText) findViewById(R.id.password2);
+            edit_password2.requestFocus();
             show2 = (Button) findViewById(R.id.show2);
             show2.setText("SHOW");
             show2.setOnClickListener(new showOrHidePassword2());
@@ -471,50 +380,6 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d(TAG, "Log tidak konek: "+e.getMessage());
                             }
                         }
-
-
-//                        boolean isVerified = false;
-//                        if (userku != null) {
-//                            isVerified = userku.isEmailVerified();
-//                        }
-//                        if (isVerified){
-//                            String local_pass2 = edit_password2.getText().toString();
-//                            if (sharedPreferences.getString("password", Default).equals(local_pass2)) {
-//
-//                                progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
-//                                progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any wher on screen
-//                                progressBar.setMessage("Please Wait...");//Tiitle shown in the progress bar
-//                                progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);//Style of the progress bar
-//                                progressBar.setProgress(0);//attributes
-//                                progressBar.setMax(100);//attributes
-//                                progressBar.show();//show the progress bar
-//                                //This handler will add a delay of 3 seconds
-//                                new Handler().postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        //Intent start to open the navigation drawer activity
-//                                        progressBar.cancel();//Progress bar will be cancelled (hide from screen) when this run function will execute after 3.5seconds
-//                                        Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
-//                                        intent.putExtra("disableleaderboard", "1");
-//                                        startActivity(intent);
-//                                        finish();
-//                                    }
-//                                }, 0);
-//
-//                            } else {
-//                                Toast.makeText(MainActivity.this, "Please Enter correct password", Toast.LENGTH_SHORT).show();
-//                            }
-//                        } else {
-//                            //mAuth.signOut();
-//
-//                            Intent mainIntent =  new Intent(myContext, LoginActivity.class);
-//                            mainIntent.putExtra("inputannomorhp",save_phone);
-//                            mainIntent.putExtra("disableleaderboard", "1");
-//                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            startActivity(mainIntent);
-//                            finish();
-//                            Toast.makeText(MainActivity.this, "Cek email Anda dan lakukan verifikasi", Toast.LENGTH_LONG).show();
-//                        }
                     }
                 });
             } catch (Exception e) {
@@ -522,10 +387,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-
-
-
-
     }
 
     /** checking email verified or NOT */
@@ -666,28 +527,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(view);
         builder.show();
     }
-
-//    public void showPunyaakun(View view) {
-//        DialogInterface.OnClickListener dialogSetujuClickListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                switch (which){
-//                    case DialogInterface.BUTTON_POSITIVE:
-//                        //Yes button clicked
-//                        /*  startActivity(new Intent(this,Setting.class));*/
-//                        startActivity(new Intent(MainChatActivity.this, LoginActivity.class));
-//                        break;
-//
-//                    case DialogInterface.BUTTON_NEGATIVE:
-//                        //No button clicked
-//                        break;
-//                }
-//            }
-//        };
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainChatActivity.this);
-//        builder.setMessage("Anda login dengan akun yang lama sehingga tidak diijinkan mensubmit skor ke leaderboar. Apakah ingin melanjutkan?").setPositiveButton("Ya", dialogSetujuClickListener)
-//                .setNegativeButton("Batal", dialogSetujuClickListener).show();
-//    }
 
 
     //Used to add some time so that user cannot directly press and exity out of the activity
@@ -927,97 +766,6 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                    //showData(dataSnapshot);
-//                                    if(userku==null){
-//                                        tidakbolehdaftar="boleh";
-//                                        userID = userku.getUid();
-//                                        for(DataSnapshot ds : dataSnapshot.getChildren()){
-//                                            UserInformation uInfo = new UserInformation();
-//                                            uInfo.setUser_name(ds.child(userID).getValue(UserInformation.class).getUser_name());//ngeset username di objek
-//                                            uInfo.setUser_email(ds.child(userID).getValue(UserInformation.class).getUser_name()); //ngeset email di objek
-//                                            uInfo.setUser_mobile(ds.child(userID).getValue(UserInformation.class).getUser_name()); //ngeset nomer telepon di objek
-//
-//                                            //tampilkan semua data informasi
-//                                            Log.d(TAG,"showData: name:" +uInfo.getUser_name());
-//                                            Log.d(TAG,"showData: email:" +uInfo.getUser_email());
-//                                            Log.d(TAG,"showData: nomerhape:" +uInfo.getUser_mobile());
-//
-//                                            if(save_phone.equals(uInfo.getUser_name())){
-//                                                Toast.makeText(MainActivity.this, "Anda terdeteksi pernah memiliki akun!. Anda tidak diizinkan mendaftar ulang.", Toast.LENGTH_SHORT).show();
-//                                                tidakbolehdaftar="tidakboleh";
-//                                                break;
-//                                            }else{
-//                                                tidakbolehdaftar="boleh";
-//                                                if (dataSnapshot.child(save_phone).exists()) {
-//                                                    Intent mainIntent =  new Intent(myContext, LoginActivity.class);
-//                                                    mainIntent.putExtra("disableleaderboard", "0");
-//                                                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                                    startActivity(mainIntent);
-//                                                    Toast.makeText(MainActivity.this, "Anda sudah memeiliki akun, silahkan login dengan akun Anda!", Toast.LENGTH_SHORT).show();
-//                                                    finish();
-//                                                }
-//                                            }
-//
-//                                //            ArrayList<String> array = new ArrayList<>();
-//                                //            array.add(uInfo.getUser_name());
-//                                //            array.add(uInfo.getUser_email());
-//                                //            array.add(uInfo.getUser_mobile());
-//
-//                                        }
-//                                    }
-//                                    Map<String,Object> users;
-//                                    users = (Map<String,Object>) dataSnapshot.getValue();
-//                                    //Get map of users in datasnapshot
-//                                    //collectPhoneNumbers((Map<String,Object>) dataSnapshot.getValue(),deviceToken);
-//                                    ArrayList<String> phoneNumbers = new ArrayList<>();
-//                                    ArrayList<String> tokenUser = new ArrayList<>();
-//
-//                                    //iterate through each user, ignoring their UID
-//                                    for (Map.Entry<String, Object> entry : users.entrySet()){
-//                                        //try{
-//                                            //Get user map
-//                                            Map singleUser = (Map) entry.getValue();
-//                                            //Get phone field and append to list
-//                                            phoneNumbers.add((String) singleUser.get("user_mobile"));
-//                                            tokenUser.add((String) singleUser.get("device_token"));
-//
-//                                            if(singleUser.get("user_mobile").equals(save_phone)||singleUser.get("device_token").equals(deviceToken)){
-//                                                tidakbolehdaftar="tidakboleh";
-//                                                break;
-//                                            }else{
-//                                                tidakbolehdaftar="boleh";
-//                                            }
-////                                        }catch (Exception e) {
-////                                            Log.d(TAG, "Terdeteksi sudah pernah daftar: "+e.getMessage());
-////                                            Toast.makeText(MainActivity.this, "Terjadi kesalahan, silahkan hubingi admin", Toast.LENGTH_SHORT).show();
-////                                            Intent mainIntent =  new Intent(myContext, LoginActivity.class);
-////                                            mainIntent.putExtra("disableleaderboard", "0");
-////                                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-////                                            startActivity(mainIntent);
-////                                            finish();
-////                                        }
-//
-//                                    }
-                                    //if(tidakbolehdaftar.equals("boleh")){
-
-//                                    }else{
-//                                        Toast.makeText(MainActivity.this, "Anda terdeteksi pernah memiliki akun!. Anda tidak diizinkan mendaftar ulang.", Toast.LENGTH_SHORT).show();
-////                        mAuth.signOut();
-////                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-////                                new ResultCallback<Status>() {
-////                                    @Override
-////                                    public void onResult(Status status) {
-////
-////
-////                                    }
-////                                });
-////                        Intent mainIntent =  new Intent(myContext, LoginActivity.class);
-////                        mainIntent.putExtra("disableleaderboard", "0");
-////                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-////                        startActivity(mainIntent);
-////                        Toast.makeText(MainActivity.this, "Anda sudah memeiliki akun, silahkan login dengan akun Anda!", Toast.LENGTH_SHORT).show();
-////                        finish();
-//                                    }
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
@@ -1060,10 +808,6 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
     }
 
-//    private void showData(DataSnapshot dataSnapshot) {
-//
-//
-//    }
 
     public void showDialog(View view) {
         int[][] states = new int[][]{
