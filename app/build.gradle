@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     dexOptions {
         preDexLibraries = false
         javaMaxHeapSize "4g"
@@ -21,10 +21,10 @@ android {
         }
         vectorDrawables.useSupportLibrary = true
         applicationId "com.harysaydev.amikpgrikbmquiz"
-        minSdkVersion 19
-        targetSdkVersion 33
-        versionCode 25
-        versionName "b25.30102023"
+        minSdk 19
+        targetSdk 34
+        versionCode 26
+        versionName "b26.30102023"
         multiDexEnabled true
     }
 

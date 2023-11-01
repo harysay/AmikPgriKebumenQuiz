@@ -2,6 +2,7 @@ package com.harysaydev.amikpgrikbmquiz;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.Settings;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +68,8 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
     Date currentTime = Calendar.getInstance().getTime();
     String kodeMakul;
     float nilaiAkhirUser;
+    ProgressBar progressBar;
+    String namapeng,kodeunikpengguna;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,8 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         SharedPreferences.Editor editor = shared.edit();
         nomor_phone = sharedPreferences.getString("phone", "0895325322911");
         header_name = sharedPreferences.getString("name", "xyz");
+        kodeunikpengguna = sharedPreferences.getString("kodeunik","tidak terdeteksi");
+        progressBar = new ProgressBar(Result.this);
 //        int grafika = shared.getInt("Grafikakomputer", 0);
 //        int pbo = shared.getInt("Pbo", 0);
 //        int kecerdasan = shared.getInt("Kecerdasanbuatan", 0);
@@ -85,16 +93,15 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         attempt = intent.getIntExtra("attemp", 0);
         jumSoal = intent.getIntExtra("jumlahsoal",0);
         kodeMakul = intent.getStringExtra("kodemakul");
-        tambahDaftarMengikuti(kodeMakul);
         databaseFb = FirebaseDatabase.getInstance();
         tabel_skor  = databaseFb.getReference("ResultPerTest");
-
 
         incorr = attempt - cor;
         scor = 10 * cor; //nilai benar dikali 10
         rootContent = (LinearLayout) findViewById(R.id.root_content);
         fullPageScreenshot = (Button) findViewById(R.id.shareResult);
         //imageView = (ImageView) findViewById(R.id.image_viewScreenshoot);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
         judulHasil = (TextView) findViewById(R.id.judulHasil);
         totalSoal = (TextView) findViewById(R.id.totalsoal);
         correct = (TextView) findViewById(R.id.correct);
@@ -105,16 +112,21 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
         you = (TextView) findViewById(R.id.you);
         namapengguna = (TextView) findViewById(R.id.namaPengguna);
         String buatJudul = intent.getStringExtra("makul");
-        String namapeng = intent.getStringExtra("jeneng");
+        namapeng = intent.getStringExtra("jeneng");
         fullPageScreenshot.setOnClickListener(this);
         judulHasil.setText("Statistik "+buatJudul);
-        namapengguna.setText(namapeng +"("+sharedPreferences.getString("kodeunik","tidak terdeteksi")+")");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            namapengguna.setText(namapeng);
+        }else{
+            namapengguna.setText(namapeng +"("+kodeunikpengguna+")");
+        }
         totalSoal.setText("  " +jumSoal);
         attempted.setText("  " + attempt);
         correct.setText("  " + cor);
         incorrect.setText("  " + incorr);
         score.setText("Points  :    " + scor);
         nilaiAkhirUser = (float)cor / jumSoal * 100 ; //gunakan jumlah soal sebagai pembagi karena bisa jadi user baru mengikuti 2 soal benar semua
+//        tambahDaftarMengikuti(kodeMakul,String.format ("%.2f", nilaiAkhirUser));
 //        if (kodeMakul.equals("kepribadian")){
 //            x1 = (float)cor * 5 ;
 //        }else{
@@ -157,13 +169,11 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        // Jika pengguna kembali dengan koneksi internet, lanjutkan submit nilai
         if (CheckNetwork.isInternetAvailable(Result.this)) //returns true if internet available
         {
-            // Jika pengguna kembali dengan koneksi internet, lanjutkan submit nilai
-            tambahDaftarMengikuti(kodeMakul);
-            submitNilai(kodeMakul, nilaiAkhirUser);
-
-        }else{
+        submitNilai(kodeMakul, nilaiAkhirUser);
+        }else {
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
                 alertDialog.setTitle("No Internet");
@@ -181,19 +191,18 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
                 Log.d(TAG, "Log tidak konek: "+e.getMessage());
             }
         }
+
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shareResult:
-                //Toast.makeText(this, "Tunggu menu share muncul!", Toast.LENGTH_SHORT).show();
-                //fullPageScreenshot.setBackgroundColor(getResources().getColor(R.color.light_gray));
-                //takeScreenshot(ScreenshotType.FULL);
                 float nilaiAkhir = (float)cor / jumSoal * 100;
+                int nilaiTanpaDesimal = (int) (nilaiAkhir * 100);//dilakukan seperti ini supaya pengguna tidak mengubah2 nilai manual sendiri
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Saya "+namapengguna.getText().toString()+" mendapat nilai akhir "+nilaiAkhir+" dengan jumlah benar ("+cor+") dari total soal seharusnya ("+jumSoal+")");
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Saya "+namapeng+kodeunikpengguna+nilaiTanpaDesimal+" mengerjakan soal dengan benar ("+cor+") dari total soal seharusnya ("+jumSoal+")");
                     // Mengatur tipe konten ke teks
                     sendIntent.setType("text/plain");
                     // Mengatur paket WhatsApp untuk menentukan aplikasi yang akan menangani intent
@@ -216,12 +225,6 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
-
-    /**
-     * Requesting storage permission
-     * Once the permission granted, screen shot captured
-     * On permanent denial show toast
-     */
     private void requestPermissionAndSave() {
 
         Dexter.withActivity(this)
@@ -276,151 +279,92 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
                 }).check();
     }
 
-
-    /*  Share Screenshot  */
-    private void shareScreenshot(File file) {
-        //Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
-
-    }
-
     private void submitNilai(String kodeMakul, float x1){
-        tabel_skor.addValueEventListener(new ValueEventListener() {
+        progressBar.setVisibility(View.VISIBLE);
+        tambahDaftarMengikuti(kodeMakul,String.format ("%.2f", nilaiAkhirUser));
+            tabel_skor.child(nomor_phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //ResultPerTest finishQuiz = new ResultPerTest();
-                //String coba = header_name;
                 if(kodeMakul.equals("grafikakomp")){
-                    if(dataSnapshot.child(nomor_phone).child("resultGrafikaKomputer").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }
-                    else {
-                        tabel_skor.child(nomor_phone).child("resultGrafikaKomputer").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultGrafikaKomputer","Grafika Komputer",x1);
                 }else if(kodeMakul.equals("pbo")){
-                    if(dataSnapshot.child(nomor_phone).child("resultPBO").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }
-                    else {
-                        tabel_skor.child(nomor_phone).child("resultPBO").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultPBO","PBO",x1);
                 }else if(kodeMakul.equals("kecerdasan")){
-                    if(dataSnapshot.child(nomor_phone).child("resultKecerdasanBuatan").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }
-                    else {
-                        tabel_skor.child(nomor_phone).child("resultKecerdasanBuatan").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultKecerdasanBuatan","Kecerdasan Buatan",x1);
                 }else if(kodeMakul.equals("rpl")){
-                    if(dataSnapshot.child(nomor_phone).child("resultRPL").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }else {
-                        tabel_skor.child(nomor_phone).child("resultRPL").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultRPL","RPL",x1);
                 }else if(kodeMakul.equals("strukturdata")){
-                    if(dataSnapshot.child(nomor_phone).child("resultStrukturData").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }else {
-                        tabel_skor.child(nomor_phone).child("resultStrukturData").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultStrukturData","Struktur Data",x1);
                 }else if(kodeMakul.equals("pemrogramaninternet")){
-                    if(dataSnapshot.child(nomor_phone).child("resultPemrogramanInternet").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }else {
-                        tabel_skor.child(nomor_phone).child("resultPemrogramanInternet").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
+                    masukanData(dataSnapshot,"resultPemrogramanInternet","Pemrograman Internet",x1);
                 }else if(kodeMakul.equals("jaringankomputer")){
-                    if(dataSnapshot.child(nomor_phone).child("resultJarkom").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }
-                    else {
-                        tabel_skor.child(nomor_phone).child("resultDesainWeb").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
-                }
-                else if(kodeMakul.equals("desainweb")){
-                    if(dataSnapshot.child(nomor_phone).child("resultDesainWeb").exists()){
-                        if(!dataSnapshot.child(nomor_phone).child("namaPengguna").exists()){
-                            showToastDeteksi();
-                            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
-                        }else{
-                            showToastDeteksi();
-                        }
-                    }
-                    else {
-                        tabel_skor.child(nomor_phone).child("resultDesainWeb").setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
-                        showToastSukses();
-                    }
-                }
-                else{
+                    masukanData(dataSnapshot,"resultJarkom","Jaringan Komputer",x1);
+                }else if(kodeMakul.equals("desainweb")){
+                    masukanData(dataSnapshot,"resultDesainWeb","Desain Web",x1);
+                }else{
                     showToast();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
-    public void tambahDaftarMengikuti(String kodemakul){
+
+    private void masukanData(DataSnapshot dataSnapshot,String kodemakul, String namamakul,float x1){
+        // Periksa apakah nomor telepon ada di dalam database
+        if (dataSnapshot.exists()) {
+            if (dataSnapshot.hasChild(kodemakul)) {
+                // Data mata kuliah sudah ada
+                Toast.makeText(getApplicationContext(), "Anda sudah pernah mengerjakan soal "+namamakul, Toast.LENGTH_SHORT).show();
+            } else {
+                // Data mata kuliah belum ada
+                tabel_skor.child(nomor_phone).child(kodemakul).setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
+                showToastSukses();
+            }
+        } else {
+            // Data nomor telepon belum ada
+            tabel_skor.child(nomor_phone).child("namaPengguna").setValue(header_name);
+            tabel_skor.child(nomor_phone).child(kodemakul).setValue(String.valueOf(x1)+" ("+currentTime.toString()+")");
+            showToastSukses();
+        }
+    }
+    public void tambahDaftarMengikuti(String kodemakul,String nilaiAkhir){
         if (nomor_phone != null) {
             if (CheckNetwork.isInternetAvailable(Result.this)) //returns true if internet available
             {
                 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(nomor_phone);
-                // Siapkan data yang ingin Anda tambahkan
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("yangpernahdiikuti/"+kodemakul, true); // Menambah informasi kodemakul
-                // Update data di Firebase Database
-                databaseRef.updateChildren(updates)
-                        .addOnSuccessListener(aVoid -> {
-                            // Proses berhasil
-                            System.out.println("Informasi "+kodemakul+" berhasil ditambahkan.");
-                        })
-                        .addOnFailureListener(e -> {
-                            // Proses gagal
-                            System.out.println("Gagal menambahkan informasi "+kodemakul+": " + e.getMessage());
-                        });
+                // Lakukan pengecekan apakah kodemakul sudah ada di dalam yangpernahdiikuti
+                databaseRef.child("yangpernahdiikuti").child(kodemakul).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Jika kodemakul sudah ada
+                            System.out.println("Informasi " + kodemakul + " sudah ada.");
+                        } else {
+                            // Jika kodemakul belum ada, tambahkan informasi baru
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("yangpernahdiikuti/" + kodemakul, nilaiAkhir);
+                            databaseRef.updateChildren(updates)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Proses berhasil
+                                        System.out.println("Informasi " + kodemakul + " berhasil ditambahkan.");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Proses gagal
+                                        System.out.println("Gagal menambahkan informasi " + kodemakul + ": " + e.getMessage());
+                                    });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Tangani kesalahan jika terjadi
+                        System.out.println("Error: " + databaseError.getMessage());
+                    }
+                });
             }else {
                 try {
                     AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
@@ -445,28 +389,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
     public void showToast() {
         // Set the toast and duration
         int toastDurationInMilliSeconds = 3000; //5000 = 5 detik
-        mToastToShow = Toast.makeText(this, "Nilai ini tidak diambil untuk penilaian kuliah karena Anda pernah mengikuti sebelumnya!", Toast.LENGTH_SHORT);
-
-        // Set the countdown to display the toast
-        CountDownTimer toastCountDown;
-        toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1000 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                mToastToShow.show();
-            }
-            public void onFinish() {
-                mToastToShow.cancel();
-            }
-        };
-
-        // Show the toast and starts the countdown
-        mToastToShow.show();
-        toastCountDown.start();
-    }
-
-    public void showToastDeteksi() {
-        // Set the toast and duration
-        int toastDurationInMilliSeconds = 10000;
-        mToastToShow = Toast.makeText(this, "Nilai Anda telah terekam!", Toast.LENGTH_LONG);
+        mToastToShow = Toast.makeText(this, "Nilai ini tidak diambil untuk penilaian kuliah!", Toast.LENGTH_SHORT);
 
         // Set the countdown to display the toast
         CountDownTimer toastCountDown;
@@ -487,7 +410,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
     public void showToastSukses() {
         // Set the toast and duration
         int toastDurationInMilliSeconds = 10000;
-        mToastToShow = Toast.makeText(this, "Sukses Input Nilai!", Toast.LENGTH_LONG);
+        mToastToShow = Toast.makeText(this, "Nilai Anda telah terekam!", Toast.LENGTH_LONG);
 
         // Set the countdown to display the toast
         CountDownTimer toastCountDown;

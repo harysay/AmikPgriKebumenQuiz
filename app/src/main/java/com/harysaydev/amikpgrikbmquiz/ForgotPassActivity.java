@@ -101,9 +101,8 @@ public class ForgotPassActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPassActivity.this);
         View view = LayoutInflater.from(ForgotPassActivity.this).inflate(R.layout.register_success_popup, null);
         TextView successMessage = view.findViewById(R.id.successMessage);
-        successMessage.setText("Password reset link has been sent successfully.\nPlease check your email. Thank You.");
+        successMessage.setText("link reset password tealh berhasil dikirim.\nSilakan cek email Anda. Terima Kasih.");
         builder.setCancelable(true);
-
         builder.setView(view);
         builder.show();
     }

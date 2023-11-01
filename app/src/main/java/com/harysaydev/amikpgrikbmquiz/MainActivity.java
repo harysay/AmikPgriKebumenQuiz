@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressBar.cancel();
             }
         });
 
@@ -461,7 +461,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerAccount(final String name, final String email, final String mobile, final String password) {
-
         //Validation for empty fields
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(MainActivity.this, "Masukan nama lengkap Anda", Toast.LENGTH_LONG).show();

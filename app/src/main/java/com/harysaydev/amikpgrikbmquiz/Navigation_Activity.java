@@ -18,7 +18,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +41,6 @@ public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String getSudahPunyaAkunDariLogin, nope,bolehAksesSoal="boleh";
     private SharedPreferences sharedPreferences;
-    private DatabaseReference cekVerifikasiDatabaseReference;
     TextView nav_header_nam, nav_header_emal;
     ImageView nav_header_imag;
     public final static String Message = "com.harysaydev.amikpgrikbmquiz.MESSAGE";
@@ -72,8 +70,6 @@ public class Navigation_Activity extends AppCompatActivity
             mediaPlayer.start();
             mediaPlayer.setLooping(true);
         }
-        cekVerifikasiDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-
 
         //Set name,email,image in  the navigation side drawer to those we enter in the login page
         String nav_header_name = sharedPreferences.getString("name", "xyz");
@@ -116,9 +112,6 @@ public class Navigation_Activity extends AppCompatActivity
             public void onClick(View v) {
 
                 //To show button click
-                new Handler().postDelayed(new Runnable() {@Override public void run(){}}, 400);
-
-
                 progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
                 progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any wher on screen
                 progressBar.setMessage("Mempersiapkan Pertanyaan...");//Title shown in the progress bar
@@ -127,15 +120,12 @@ public class Navigation_Activity extends AppCompatActivity
                 progressBar.setMax(100);//attributes
                 progressBar.show();//show the progress bar
                 //This handler will add a delay of 3 seconds
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Intent start to open the navigation drawer activity
-                        progressBar.cancel();//Progress bar will be cancelled (hide from screen) when this run function will execute after 3.5seconds
-                        Intent intent = new Intent(Navigation_Activity.this, Questions.class);
-                        intent.putExtra(Message, "komputer");//by this statement we are sending the name of the button that invoked the new Questions.java activity "Message" is defined by the name of the package + MESSAGE
-                        startActivity(intent);
-                    }
+                new Handler().postDelayed(() -> {
+                    //Intent start to open the navigation drawer activity
+                    progressBar.cancel();//Progress bar will be cancelled (hide from screen) when this run function will execute after 3.5seconds
+                    Intent intent = new Intent(Navigation_Activity.this, Questions.class);
+                    intent.putExtra(Message, "komputer");//by this statement we are sending the name of the button that invoked the new Questions.java activity "Message" is defined by the name of the package + MESSAGE
+                    startActivity(intent);
                 }, 1000);
             }
         });
@@ -595,15 +585,6 @@ public class Navigation_Activity extends AppCompatActivity
 
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
     boolean doubleBackToExitPressedOnce = false;
     @Override
     public void onBackPressed() {
@@ -624,12 +605,6 @@ public class Navigation_Activity extends AppCompatActivity
                 doubleBackToExitPressedOnce = false;
             }
         }, 4000);
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
     }
 
     private String cekHakAksesSoal(String nohp,String kodemakul){
@@ -640,16 +615,20 @@ public class Navigation_Activity extends AppCompatActivity
                 if (dataSnapshot.child("yangpernahdiikuti").exists()) {
                     // Jika "yangpernahdiikuti" sudah ada
                     if(dataSnapshot.child("yangpernahdiikuti/"+kodemakul).exists()){
-                        boolean rplValue = dataSnapshot.child("yangpernahdiikuti/"+kodemakul).getValue(Boolean.class);
-                        if (rplValue) {
-                            // Jika rpl bernilai true, lakukan sesuatu
-                            bolehAksesSoal = "tidak";
-                            System.out.println("Data 'rpl' sudah ada dan bernilai true");
-                        }
+//                        boolean rplValue = dataSnapshot.child("yangpernahdiikuti/"+kodemakul).getValue(Boolean.class);
+//                        if (rplValue) {
+//                            // Jika rpl bernilai true, lakukan sesuatu
+//                            bolehAksesSoal = "tidak";
+//                            System.out.println("Data 'rpl' sudah ada dan bernilai true");
+//                        }
+                        bolehAksesSoal = "tidak";
+                        System.out.println("Data 'rpl' sudah ada");
                     }else {
                         bolehAksesSoal = "boleh";
                     }
 
+                }else {
+                    bolehAksesSoal = "boleh";
                 }
             }
 
@@ -662,7 +641,6 @@ public class Navigation_Activity extends AppCompatActivity
         return bolehAksesSoal;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -962,6 +940,11 @@ public class Navigation_Activity extends AppCompatActivity
     private boolean getKodeAkses(String kodeInputan,View v,String makul, String valueMakulIntent, String sekaliikutkode){
         cekHakAksesSoal(nope,valueMakulIntent);
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference(); // Mendapatkan referensi ke Realtime Database
+        // Menampilkan ProgressDialog sebelum mengecek data di Firebase
+        progressBar = new ProgressDialog(Navigation_Activity.this);
+        progressBar.setCancelable(false);
+        progressBar.setMessage("Mengecek hak akses akses "+makul);
+        progressBar.show();
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -973,46 +956,41 @@ public class Navigation_Activity extends AppCompatActivity
 //                            cekHakAksesSoal();
                     if(sharedPreferences.getString(sekaliikutkode,"1").equals("0")){
                         Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti lebih dari 1x", Toast.LENGTH_SHORT).show();
+                        progressBar.dismiss();
                     }
                     else {
                         if (bolehAksesSoal.equals("boleh")) {
                             //To show button click
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                }
-                            }, 300);
 
-                            progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
-                            progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any wher on screen
-                            progressBar.setMessage("Mempersiapkan Pertanyaan "+makul+" ...");//Title shown in the progress bar
-                            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);//Style of the progress bar
-                            progressBar.setProgress(0);//attributes
-                            progressBar.setMax(100);//attributes
-                            progressBar.show();//show the progress bar
-                            //This handler will add a delay of 3 seconds
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //Intent start to open the navigation drawer activity
-                                    progressBar.cancel();
-                                    Intent intent = new Intent(Navigation_Activity.this, Questions.class);
-                                    intent.putExtra(Message, valueMakulIntent);
-                                    startActivity(intent);
-                                }
-                            }, 1000);
+//                            progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
+//                            progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any wher on screen
+//                            progressBar.setMessage("Mempersiapkan Pertanyaan "+makul+" ...");//Title shown in the progress bar
+//                            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);//Style of the progress bar
+//                            progressBar.setProgress(0);//attributes
+//                            progressBar.setMax(100);//attributes
+//                            progressBar.show();//show the progress bar
+//                            //This handler will add a delay of 3 seconds
+//                            //Intent start to open the navigation drawer activity
+//                            progressBar.cancel();
+                            progressBar.dismiss();
+                            Intent intent = new Intent(Navigation_Activity.this, Questions.class);
+                            intent.putExtra(Message, valueMakulIntent);
+                            startActivity(intent);
                         }else if(bolehAksesSoal.equals("tidak")){
                             Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti soal ini untuk kedua kalinya", Toast.LENGTH_SHORT).show();
+                            progressBar.dismiss();
                         }
                     }
                 } else {
                     // Lakukan tindakan jika kondisi tidak terpenuhi
                     Toast.makeText(Navigation_Activity.this, "Mohon maaf Anda tidak memiliki hak akses ke sini, silahkan hubungi Admin!", Toast.LENGTH_LONG).show();
+                    progressBar.dismiss();
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Tangani kesalahan bila terjadi
+                progressBar.dismiss();
                 Toast.makeText(Navigation_Activity.this, "Tidak bisa ada response dari server!", Toast.LENGTH_LONG).show();
             }
         });

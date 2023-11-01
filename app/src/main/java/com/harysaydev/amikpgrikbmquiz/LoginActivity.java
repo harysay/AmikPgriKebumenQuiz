@@ -140,17 +140,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private String getDate(long timeStamp){
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            Date netDate = (new Date(timeStamp));
-            return sdf.format(netDate);
-        }
-        catch(Exception ex){
-            return "xx";
-        }
-    }
-
     private void loginUserAccount(String email, String password) {
         //just validation
         if(TextUtils.isEmpty(email)){
@@ -163,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Masukan password Anda", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "Password is required", Toast.LENGTH_SHORT, true).show();
         } else if (password.length() < 6){
-            Toast.makeText(this, "Pastikan password Anda terdiri dari 6 karakter", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Pastikan password Anda terdiri dari min 6 karakter", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "May be your password had minimum 6 numbers of character.", Toast.LENGTH_SHORT, true).show();
         } else {
 
@@ -249,25 +238,6 @@ public class LoginActivity extends AppCompatActivity {
 //                                    checkVerifiedEmail();
                                 }
 
-
-//                                //String current_userID =  mAuth.getCurrentUser().getUid();
-//                                storeDefaultDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("users").child(getNomorHPInputan);
-//                                //DatabaseReference dariFirebase = storeDefaultDatabaseReference2.child("user_email");
-//                                storeDefaultDatabaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                                        //Toast.makeText(getApplicationContext(), "User updated", Toast.LENGTH_SHORT).show();
-//                                        //}
-////                    if (dataSnapshot.child("user_email").child(userEmail.getText().toString()).exists()) {
-////
-////                    }
-//                                    }
-//                                    @Override
-//                                    public void onCancelled(DatabaseError databaseError) {
-//                                        Log.w(TAG, "error saat cek eksis nomor hp", databaseError.toException());
-//                                    }
-//                                });
                             } else {
                                 Toast.makeText(LoginActivity.this, "Mungkin email atau password yang Anda masukan salah. Silahkan koreksi dan coba lagi", Toast.LENGTH_LONG).show();
                                 //Toasty.error(LoginActivity.this, "Your email and password may be incorrect. Please check & try again.", Toast.LENGTH_SHORT, true).show();
