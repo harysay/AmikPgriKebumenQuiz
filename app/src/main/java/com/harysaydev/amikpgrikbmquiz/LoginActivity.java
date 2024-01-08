@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(user!=null) {
                     user.sendEmailVerification();
-                    Toast.makeText(LoginActivity.this, "Verifikasi terkirim!, silahkan cek email Anda", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Verification sent!, please check your email", Toast.LENGTH_LONG).show();
                 }else{
                     mAuth.signOut();
                 }
@@ -143,16 +143,16 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUserAccount(String email, String password) {
         //just validation
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(this, "Masukan email", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Enter email", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "Email is required",Toast.LENGTH_SHORT, true).show();
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(this, "Email Anda tidak valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Your email is invalid", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "Your email is not valid.",Toast.LENGTH_SHORT, true).show();
         } else if(TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Masukan password Anda", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Enter your password", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "Password is required", Toast.LENGTH_SHORT, true).show();
         } else if (password.length() < 6){
-            Toast.makeText(this, "Pastikan password Anda terdiri dari min 6 karakter", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Make sure your password consists of at least 6 characters", Toast.LENGTH_LONG).show();
             //Toasty.error(this, "May be your password had minimum 6 numbers of character.", Toast.LENGTH_SHORT, true).show();
         } else {
 
@@ -234,12 +234,12 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     });
                                 }else{
-                                    Toast.makeText(LoginActivity.this, "Email belum terverifikasi, lakukan verifikasi melalui email yang Anda daftarkan", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this, "Email has not been verified, verify via the email you registered", Toast.LENGTH_LONG).show();
 //                                    checkVerifiedEmail();
                                 }
 
                             } else {
-                                Toast.makeText(LoginActivity.this, "Mungkin email atau password yang Anda masukan salah. Silahkan koreksi dan coba lagi", Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Maybe the email or password you entered is wrong. Please correct and try again", Toast.LENGTH_LONG).show();
                                 //Toasty.error(LoginActivity.this, "Your email and password may be incorrect. Please check & try again.", Toast.LENGTH_SHORT, true).show();
                             }
 
@@ -294,7 +294,7 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Email belum terverifikasi, lakukan verifikasi melalui email yang Anda daftarkan", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Email has not been verified, verify via the email you registered", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -310,7 +310,7 @@ public class LoginActivity extends AppCompatActivity {
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(mainIntent);
             finish();
-            Toast.makeText(LoginActivity.this, "Cek email Anda dan lakukan verifikasi", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Check your email and verify", Toast.LENGTH_LONG).show();
         }
 
 //        user = mAuth.getCurrentUser();

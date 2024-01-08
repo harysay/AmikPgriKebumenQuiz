@@ -149,7 +149,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
                 alertDialog.setTitle("No Internet");
-                alertDialog.setMessage("Check your internet connectivity and try again");
+                alertDialog.setMessage("Nyalakan kembali koneksi internet Anda untuk mengirim nilai (tidak mengapa pindah aplikasi jika sudah sampai sini)");
                 alertDialog.setIcon(android.R.drawable.stat_sys_warning);
                 alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int n) {
@@ -177,7 +177,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
                 alertDialog.setTitle("No Internet");
-                alertDialog.setMessage("Check your internet connectivity and try again");
+                alertDialog.setMessage("Nyalakan kembali koneksi internet Anda untuk mengirim nilai (tidak mengapa pindah aplikasi jika sudah sampai sini)");
                 alertDialog.setIcon(android.R.drawable.stat_sys_warning);
                 alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int n) {
@@ -369,7 +369,7 @@ public class Result extends AppCompatActivity implements View.OnClickListener {
                 try {
                     AlertDialog alertDialog = new AlertDialog.Builder(Result.this).create();
                     alertDialog.setTitle("No Internet");
-                    alertDialog.setMessage("Check your internet connectivity and try again");
+                    alertDialog.setMessage("Nyalakan kembali koneksi internet Anda untuk mengirim nilai (tidak mengapa pindah aplikasi jika sudah sampai sini)");
                     alertDialog.setIcon(android.R.drawable.stat_sys_warning);
                     alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int n) {

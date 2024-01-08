@@ -23,8 +23,8 @@ android {
         applicationId "com.harysaydev.amikpgrikbmquiz"
         minSdk 19
         targetSdk 34
-        versionCode 26
-        versionName "b26.30102023"
+        versionCode 31
+        versionName "b31.05012024"
         multiDexEnabled true
     }
 

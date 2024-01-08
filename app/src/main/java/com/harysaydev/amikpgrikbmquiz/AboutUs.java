@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class AboutUs extends AppCompatActivity {
     Button b;
@@ -19,7 +20,9 @@ public class AboutUs extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        TextView versi = (TextView) findViewById(R.id.versiaplikasi);
+        String versionName = BuildConfig.VERSION_NAME;
+        versi.setText(versionName);
         b = (Button) findViewById(R.id.visit_website);
         b.setOnClickListener(new View.OnClickListener() {
             @Override

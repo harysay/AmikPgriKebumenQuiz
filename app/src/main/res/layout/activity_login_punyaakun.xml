@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="Kirim ulang email verifikasi"
+            android:text="Resend the verification email"
             android:textColor="#021b6b"
             android:layout_marginTop="07dp"
             android:gravity="center"

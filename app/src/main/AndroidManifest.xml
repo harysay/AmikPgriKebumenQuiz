@@ -79,6 +79,12 @@
             android:resizeableActivity="false"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".QuestionsUas"
+            android:label="Questions UAS"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Result"
             android:label="Hasil Ujian"
             android:resizeableActivity="false"/>
@@ -139,9 +145,9 @@
             android:name=".socialmedia.main.editProfile.createProfile.CreateProfileActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_create_profile" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
+<!--        <activity-->
+<!--            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"-->
+<!--            android:theme="@style/Base.Theme.AppCompat" />-->
         <activity
             android:name=".socialmedia.main.profile.ProfileActivity"
             android:configChanges="orientation|screenSize"

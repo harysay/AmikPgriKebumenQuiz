@@ -40,6 +40,7 @@ import com.harysaydev.amikpgrikbmquiz.chat.Home.MainChatActivity;
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String getSudahPunyaAkunDariLogin, nope,bolehAksesSoal="boleh";
+    private String kodeAksesUas = "uaspboakuharusjujur";
     private SharedPreferences sharedPreferences;
     TextView nav_header_nam, nav_header_emal;
     ImageView nav_header_imag;
@@ -53,8 +54,11 @@ public class Navigation_Activity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_);
+        // Ambil versi aplikasi dari build.gradle
+        String versionName = BuildConfig.VERSION_NAME;
         getSudahPunyaAkunDariLogin = getIntent().getExtras().get("disableleaderboard").toString();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("AMIK PGRI ("+versionName+")");
         setSupportActionBar(toolbar);
         sharedPreferences = getSharedPreferences("Content_main", Context.MODE_PRIVATE);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -622,7 +626,7 @@ public class Navigation_Activity extends AppCompatActivity
 //                            System.out.println("Data 'rpl' sudah ada dan bernilai true");
 //                        }
                         bolehAksesSoal = "tidak";
-                        System.out.println("Data 'rpl' sudah ada");
+                        System.out.println("Data "+kodemakul+" sudah ada");
                     }else {
                         bolehAksesSoal = "boleh";
                     }
@@ -808,7 +812,11 @@ public class Navigation_Activity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskPbo.getText());
-                        getKodeAkses(task,v,"Pemrograman Berorientasi Objek","pbo","sekaliikutpbo");
+                        if(task.equals(kodeAksesUas)){
+                            getKodeAkses(task, v, "UAS PBO", "uaspbo", "sekaliikutpbo");
+                        }else {
+                            getKodeAkses(task, v, "Pemrograman Berorientasi Objek", "pbo", "sekaliikutpbo");
+                        }
                     }
                 })
                 .setNegativeButton("Tutup", null)
@@ -960,22 +968,17 @@ public class Navigation_Activity extends AppCompatActivity
                     }
                     else {
                         if (bolehAksesSoal.equals("boleh")) {
-                            //To show button click
-
-//                            progressBar = new ProgressDialog(v.getContext());//Create new object of progress bar type
-//                            progressBar.setCancelable(false);//Progress bar cannot be cancelled by pressing any wher on screen
-//                            progressBar.setMessage("Mempersiapkan Pertanyaan "+makul+" ...");//Title shown in the progress bar
-//                            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);//Style of the progress bar
-//                            progressBar.setProgress(0);//attributes
-//                            progressBar.setMax(100);//attributes
-//                            progressBar.show();//show the progress bar
-//                            //This handler will add a delay of 3 seconds
-//                            //Intent start to open the navigation drawer activity
-//                            progressBar.cancel();
-                            progressBar.dismiss();
-                            Intent intent = new Intent(Navigation_Activity.this, Questions.class);
-                            intent.putExtra(Message, valueMakulIntent);
-                            startActivity(intent);
+                            if(kodeInputan.equals(kodeAksesUas)){
+                                progressBar.dismiss();
+                                Intent intent = new Intent(Navigation_Activity.this, QuestionsUas.class);
+                                intent.putExtra(Message, valueMakulIntent);
+                                startActivity(intent);
+                            }else {
+                                progressBar.dismiss();
+                                Intent intent = new Intent(Navigation_Activity.this, Questions.class);
+                                intent.putExtra(Message, valueMakulIntent);
+                                startActivity(intent);
+                            }
                         }else if(bolehAksesSoal.equals("tidak")){
                             Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti soal ini untuk kedua kalinya", Toast.LENGTH_SHORT).show();
                             progressBar.dismiss();

@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -226,26 +227,22 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (CheckNetwork.isInternetAvailable(MainActivity.this)) //returns true if internet available
                     {
-                        save_name = edit_name.getText().toString();
-                        save_email = edit_email.getText().toString();
-                        save_kunc = edit_password.getText().toString();
-                        save_phone = edit_phone.getText().toString();
-                        DialogInterface.OnClickListener dialogSetujuClickListener = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        //Yes button clicked
-                                        /*  startActivity(new Intent(this,Setting.class));*/
-//                                    if (userku != null) {
-                                        //String UID = userku.getUid();
-//                                        phone_numb = sharedPreferences.getString("phone","");
-//                                        Log.d(TAG, phone_numb);
-                                        if (TextUtils.isEmpty(save_phone)){
-                                            Toast.makeText(MainActivity.this, "Isikan nomor Anda yang pernah terdaftar", Toast.LENGTH_LONG).show();
+                        final EditText taskPbo = new EditText(MainActivity.this);
+                        taskPbo.requestFocus(); // Meminta fokus pada EditText
+                        taskPbo.setFocusableInTouchMode(true); // Memastikan fokus pada EditText saat dialog ditampilkan
+                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("You will be logged in with your old account!")
+                                .setMessage("Just fill your registered phone number below")
+                                .setView(taskPbo)
+                                .setPositiveButton("Oke", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String task = String.valueOf(taskPbo.getText());
+                                        if (TextUtils.isEmpty(task)){
+                                            Toast.makeText(MainActivity.this, "Just fill in your registered phone number", Toast.LENGTH_LONG).show();
                                             //Toasty.error(myContext, "Your mobile number is required.", Toast.LENGTH_SHORT).show();
-                                        }else if (save_phone.length() < 10){
-                                            Toast.makeText(MainActivity.this, "Nomor HP minimal 10 karakter", Toast.LENGTH_LONG).show();
+                                        }else if (task.length() < 10){
+                                            Toast.makeText(MainActivity.this, "Mobile number must be at least 10 characters", Toast.LENGTH_LONG).show();
                                             //Toasty.error(myContext, "Mobile number should be min 10 characters.", Toast.LENGTH_SHORT).show();
                                         }else{
                                             //user tidak diizinkan akses leaderboard
@@ -253,14 +250,14 @@ public class MainActivity extends AppCompatActivity {
                                             userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot datSnapshot) {
-                                                    if (datSnapshot.child(save_phone).exists()) {
-                                                        Toast.makeText(MainActivity.this, "Nomor Anda terdeteksi pernah mendaftar!", Toast.LENGTH_SHORT).show();
-                                                        userDatabaseReference.child(save_phone).child("submit_permit").setValue("notpermit")
+                                                    if (datSnapshot.child(task).exists()) {
+                                                        Toast.makeText(MainActivity.this, "Your number has been detected as having registered!", Toast.LENGTH_SHORT).show();
+                                                        userDatabaseReference.child(task).child("submit_permit").setValue("notpermit")
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                           @Override
                                                                                           public void onSuccess(Void aVoid) {
                                                                                               Intent loginku = new Intent(MainActivity.this, LoginActivity.class);
-                                                                                              loginku.putExtra("inputannomorhp",save_phone);
+                                                                                              loginku.putExtra("inputannomorhp",task);
                                                                                               loginku.putExtra("disableleaderboard", "0");
                                                                                               startActivity(loginku);
                                                                                               // break;
@@ -269,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                                                                 );
                                                     }
                                                     else{
-                                                        Toast.makeText(MainActivity.this, "Data dengan nomor tersebut tidak ditemukan, silahkan hubungi admin!", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(MainActivity.this, "Data with this number was not found, please contact admin!", Toast.LENGTH_LONG).show();
                                                     }
 
                                                 }
@@ -281,23 +278,13 @@ public class MainActivity extends AppCompatActivity {
                                             });
 
                                         }
-//                                    }else{
-//                                       // mAuth = FirebaseAuth.getInstance();
-//                                        Toast.makeText(MainActivity.this, "Anda telah terblokir, silahkan hubungi Admin!", Toast.LENGTH_SHORT).show();
-//                                        finish();
-//                                        startActivity(getIntent());
-//                                    }
+                                    }
+                                })
+                                .setNegativeButton("Close", null)
+                                .create();
+                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE); // Menampilkan keyboard saat dialog ditampilkan
+                        dialog.show();
 
-
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        //No button clicked
-                                        break;
-                                }
-                            }
-                        };
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Anda akan login dengan akun lama sehingga tidak diizinkan submit skor ke leaderboard. Apakah ingin melanjutkan?").setPositiveButton("Ya", dialogSetujuClickListener)
-                                .setNegativeButton("Batal", dialogSetujuClickListener).show();
                     }else {
                         try {
                             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -361,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
                                 //String klikContinue = "sudahpunyaakun";
                                 checkVerifiedEmail(nomerhape,ve);
                             } else {
-                                Toast.makeText(MainActivity.this, "Password yang Anda masukan salah", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "The password you entered is incorrect", Toast.LENGTH_SHORT).show();
                             }
                         }else {
                             try {
@@ -425,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }else {
                     progressBar.cancel();//Progress bar will be cancelled (hide from screen)
-                    Toast.makeText(MainActivity.this, "Email belum terverifikasi, lakukan verifikasi melalui email yang Anda daftarkan", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Email has not been verified, verify via the email you registered", Toast.LENGTH_LONG).show();
                     //user diizinkan akses leaderboard
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.putExtra("disableleaderboard", "1");
@@ -454,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
             toast_help.setView(appear);
             toast_help.show();
         }else {
-            Toast.makeText(this, "Anda lupa password berarti skor yang telah Anda peroleh hilang!, silahkan daftar ulang dengan nomor HP yang baru", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "If you forget your password, it means the score you have obtained is lost", Toast.LENGTH_LONG).show();
         }
 
 
@@ -463,28 +450,28 @@ public class MainActivity extends AppCompatActivity {
     private void registerAccount(final String name, final String email, final String mobile, final String password) {
         //Validation for empty fields
         if (TextUtils.isEmpty(name)) {
-            Toast.makeText(MainActivity.this, "Masukan nama lengkap Anda", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Enter your full name", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Your name is required.", Toast.LENGTH_SHORT).show();
         } else if (name.length() < 3 || name.length() > 40){
-            Toast.makeText(MainActivity.this, "Jumlah karakter untuk nama antara 3 sampai 40", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "The number of characters for a name is between 3 and 40", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Your name should be 3 to 40 numbers of characters.", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(email)){
-            Toast.makeText(MainActivity.this, "Masukan email valid Anda", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Enter your valid email", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Your email is required.", Toast.LENGTH_SHORT).show();
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(MainActivity.this, "Email yang Anda masukan tidak valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "The email you entered is invalid", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Your email is not valid.", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(mobile)){
-            Toast.makeText(MainActivity.this, "Masukan nomor handphone valid Anda", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Enter your valid mobile number", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Your mobile number is required.", Toast.LENGTH_SHORT).show();
         } else if (mobile.length() < 10){
-            Toast.makeText(MainActivity.this, "Nomor HP minimal 10 karakter", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Mobile number must be at least 10 characters", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Mobile number should be min 10 characters.", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(password)){
-            Toast.makeText(MainActivity.this, "Masukan password Anda", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Enter your password", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Please fill this password field", Toast.LENGTH_SHORT).show();
         } else if (password.length() < 6){
-            Toast.makeText(MainActivity.this, "Jumlah karakter untuk password minimal 6 karakter", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "The minimum number of characters for the password is 6 characters", Toast.LENGTH_LONG).show();
             //Toasty.error(myContext, "Create a password at least 6 characters long.", Toast.LENGTH_SHORT).show();
         }else {
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -503,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 mainIntent.putExtra("disableleaderboard", "0");
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainIntent);
-                Toast.makeText(MainActivity.this, "Anda terdeteksi pernah memiliki akun!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "You have been detected as having an account!", Toast.LENGTH_SHORT).show();
                 finish();
             }
             else{
@@ -539,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Klik BACK lagi untuk keluar", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Click BACK again to exit", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -585,7 +572,10 @@ public class MainActivity extends AppCompatActivity {
     class tampilkanPesanLupapassword implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getApplicationContext(), "Untuk sementara menu lupa password dinonaktifkan karena Anda tidak diijinkan menginstall ulang Aplikasi dengan tujuan mereset skor", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "Temporarily the forgot password menu is disabled because you are not allowed to reinstall the application with the aim of resetting the score", Toast.LENGTH_LONG).show();
+            Log.d( TAG, "onClick: go to FORGOT Activity");
+            Intent intent = new Intent(MainActivity.this, ForgotPassActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -656,10 +646,10 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                             if (dataSnapshot.child(save_phone).exists()) {
-                                                Toast.makeText(MainActivity.this, "Nomor Anda terdeteksi pernah mendaftar!", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MainActivity.this, "Your number has been detected as having registered!", Toast.LENGTH_SHORT).show();
                                             }
                                             else if(triggerDeviceId.equals("1")) {
-                                                Toast.makeText(MainActivity.this, "Anda terblokir karena mencoba mendaftar dengan nomor yang berbeda!", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(MainActivity.this, "You were blocked because you tried to register with a different number!", Toast.LENGTH_LONG).show();
                                             }
                                             else{
 
@@ -672,7 +662,7 @@ public class MainActivity extends AppCompatActivity {
                                                         //cek apakah sudah ada di database
                                                         if (dataSnapshot.child(save_phone).exists()) {
                                                             if (z == 0) {
-                                                                Toast.makeText(MainActivity.this, "Nomor handphone Anda sudah pernah submit ke Leaderboard!", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(MainActivity.this, "Your cellphone number has already been submitted to the Leaderboard!", Toast.LENGTH_SHORT).show();
                                                             }
                                                         } else {
                                                             storeDefaultDatabaseReference.child("user_name").setValue(name);
@@ -729,7 +719,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                         regIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                                                                         startActivity(regIntent);
                                                                                                                         finish();
-                                                                                                                        Toast.makeText(MainActivity.this, "Cek email Anda dan lakukan verifikasi", Toast.LENGTH_LONG).show();
+                                                                                                                        Toast.makeText(MainActivity.this, "Check your email and verify", Toast.LENGTH_LONG).show();
                                                                                                                         //Toasty.info(myContext, "Please check your email & verify.", Toast.LENGTH_LONG).show();
 
                                                                                                                     }
@@ -786,7 +776,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             });
-                    Toast.makeText(MainActivity.this, "Anda terdeteksi telah memiliki akun, silahkan login dengan akun Anda!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You are detected to have an account, please log in with your account!", Toast.LENGTH_SHORT).show();
                     Intent mainIntent =  new Intent(myContext, LoginActivity.class);
                     mainIntent.putExtra("inputannomorhp",mobile);
                     mainIntent.putExtra("disableleaderboard", "0");

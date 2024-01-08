@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/forgotEmail"
                     android:inputType="textEmailAddress"
-                    android:hint=" Email Terdaftar"
+                    android:hint="Registered Email"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,7 +50,7 @@
                 android:id="@+id/tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Jika Anda klik RESET PASSWORD, Anda akan menerima email untuk mereset password Anda"
+                android:text="If you click RESET PASSWORD, you will receive an email to reset your password"
                 android:layout_marginTop="10dp"
                 android:padding="5dp"
                 android:gravity="center"

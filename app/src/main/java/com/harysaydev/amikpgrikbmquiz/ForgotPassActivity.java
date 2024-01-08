@@ -51,9 +51,9 @@ public class ForgotPassActivity extends AppCompatActivity {
                 String email = forgotEmail.getText().toString();
                 if(TextUtils.isEmpty(email)){
                     //Toasty.error(ForgotPassActivity.this, "Email is required", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(ForgotPassActivity.this, "Masukan alamat email Anda", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ForgotPassActivity.this, "Enter your email address", Toast.LENGTH_LONG).show();
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                    Toast.makeText(ForgotPassActivity.this, "Format email Anda tidak valid", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ForgotPassActivity.this, "Your email format is invalid", Toast.LENGTH_LONG).show();
                     //Toasty.error(ForgotPassActivity.this,"Email format is not valid.", Toast.LENGTH_SHORT).show();
                 } else {
                     // send email to reset password
@@ -74,7 +74,7 @@ public class ForgotPassActivity extends AppCompatActivity {
                                                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(mainIntent);
                                                 finish();
-                                                Toast.makeText(ForgotPassActivity.this, "Silahkan cek email Anda", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(ForgotPassActivity.this, "Please check your email", Toast.LENGTH_LONG).show();
                                                 //Toasty.info(ForgotPassActivity.this, "Please check your email.", Toast.LENGTH_LONG).show();
 
                                             }
@@ -101,7 +101,7 @@ public class ForgotPassActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPassActivity.this);
         View view = LayoutInflater.from(ForgotPassActivity.this).inflate(R.layout.register_success_popup, null);
         TextView successMessage = view.findViewById(R.id.successMessage);
-        successMessage.setText("link reset password tealh berhasil dikirim.\nSilakan cek email Anda. Terima Kasih.");
+        successMessage.setText("the password reset link has been successfully sent.\nPlease check your email.");
         builder.setCancelable(true);
         builder.setView(view);
         builder.show();
