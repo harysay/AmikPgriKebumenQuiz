@@ -24,7 +24,7 @@ import com.harysaydev.amikpgrikbmquiz.R;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.base.BasePresenter;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.LogUtil;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.ValidationUtil;
-import com.theartofdev.edmodo.cropper.CropImage;
+//import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 
@@ -70,23 +70,23 @@ public class PickImagePresenter<V extends PickImageView> extends BasePresenter<V
         return result;
     }
 
-    protected void handleCropImageResult(int requestCode, int resultCode, Intent data) {
-        ifViewAttached(view -> {
-            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (resultCode == RESULT_OK) {
-                    if (ValidationUtil.checkImageMinSize(result.getCropRect())) {
-                        Uri imageUri = result.getUri();
-                        view.loadImageToImageView(imageUri);
-                    } else {
-                        view.showSnackBar(R.string.error_smaller_image);
-                    }
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    LogUtil.logError(TAG, "crop image error", result.getError());
-                    view.showSnackBar(R.string.error_fail_crop_image);
-                }
-            }
-        });
-
-    }
+//    protected void handleCropImageResult(int requestCode, int resultCode, Intent data) {
+//        ifViewAttached(view -> {
+//            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//                if (resultCode == RESULT_OK) {
+//                    if (ValidationUtil.checkImageMinSize(result.getCropRect())) {
+//                        Uri imageUri = result.getUri();
+//                        view.loadImageToImageView(imageUri);
+//                    } else {
+//                        view.showSnackBar(R.string.error_smaller_image);
+//                    }
+//                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                    LogUtil.logError(TAG, "crop image error", result.getError());
+//                    view.showSnackBar(R.string.error_fail_crop_image);
+//                }
+//            }
+//        });
+//
+//    }
 }

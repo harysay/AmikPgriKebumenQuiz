@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -89,7 +90,8 @@ public class EditProfileActivity<V extends EditProfileView, P extends EditProfil
 
     @Override
     public void onImagePikedAction() {
-        startCropImageActivity();
+//        startCropImageActivity();
+        Toast.makeText(getApplicationContext(), "Untuk sementara fitur ini dinonaktifkan", Toast.LENGTH_SHORT).show();
     }
 
     @Override

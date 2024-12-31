@@ -33,7 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.*;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.UploadTask;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.ApplicationHelper;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.enums.UploadImagePrefix;
@@ -86,7 +86,7 @@ public class ProfileInteractor {
         Task<Void> task = FirebaseDatabase.getInstance().getReference().child(DatabaseHelper.PROFILES_DB_KEY).child(profile.getId()).setValue(profile);
         task.addOnCompleteListener(task1 -> {
             onProfileCreatedListener.onProfileCreated(task1.isSuccessful());
-            addRegistrationToken(FirebaseInstanceId.getInstance().getToken(), profile.getId());
+            addRegistrationToken(FirebaseMessaging.getInstance().getToken().toString(), profile.getId());
             LogUtil.logDebug(TAG, "createOrUpdateProfile, success: " + task1.isSuccessful());
         });
     }

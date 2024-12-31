@@ -55,7 +55,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 //import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.harysaydev.amikpgrikbmquiz.helper.CheckNetwork;
 import com.harysaydev.amikpgrikbmquiz.intro.MyIntro;
 import com.harysaydev.amikpgrikbmquiz.model.User;
@@ -609,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                String deviceToken = FirebaseMessaging.getInstance().getToken().toString();
 //                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( RegisterActivity.this,  new OnSuccessListener<InstanceIdResult>() {
 //                                    @Override
 //                                    public void onSuccess(InstanceIdResult instanceIdResult) {

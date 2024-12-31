@@ -40,8 +40,8 @@ import com.google.firebase.storage.UploadTask;
 import com.harysaydev.amikpgrikbmquiz.R;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -308,188 +308,126 @@ public class SettingsActivity extends AppCompatActivity {
          * Library Link- https://github.com/ArthurHub/Android-Image-Cropper
          * */
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GALLERY_PICK_CODE && resultCode == RESULT_OK && data != null) {
-            Uri imageUri = data.getData();
-            // start picker to get image for cropping and then use the image in cropping activity
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
-                    .start(this);
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-
-            if (resultCode == RESULT_OK) {
-                progressDialog.setMessage("Please wait...");
-                progressDialog.show();
-
-                final Uri resultUri = result.getUri();
-
-                File thumb_filePath_Uri = new File(resultUri.getPath());
-
-                //final String user_id = mAuth.getCurrentUser().getUid();
-
-                /**
-                 * compress image using compressor library
-                 * link - https://github.com/zetbaitsu/Compressor
-                 * */
-                try{
-                    thumb_Bitmap = new Compressor(this)
-                            .setMaxWidth(200)
-                            .setMaxHeight(200)
-                            .setQuality(45)
-                            .compressToBitmap(thumb_filePath_Uri);
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
-
-
-                // firebase storage for uploading the cropped image
-                final StorageReference filePath = mProfileImgStorageRef.child(pref_nope + ".jpg");
-
-                UploadTask uploadTask = filePath.putFile(resultUri);
-                Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task){
-                        if (!task.isSuccessful()){
-                            //Toasty.error(SettingsActivity.this, "Profile Photo Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(SettingsActivity.this, "Profile Photo Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            //throw task.getException();
-                        }
-                        profile_download_url = filePath.getDownloadUrl().toString();
-                        return filePath.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()){
-                            //Toasty.info(SettingsActivity.this, "Your profile photo is uploaded successfully.", Toast.LENGTH_SHORT).show();
-                            // retrieve the stored image as profile photo
-                            profile_download_url = task.getResult().toString();
-                            Log.e("tag", "profile url: "+profile_download_url);
-
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            thumb_Bitmap.compress(Bitmap.CompressFormat.JPEG, 45, outputStream);
-                            final byte[] thumb_byte = outputStream.toByteArray();
-
-                            // firebase storage for uploading the cropped and compressed image
-                            final StorageReference thumb_filePath = thumb_image_ref.child(pref_nope + "jpg");
-                            UploadTask thumb_uploadTask = thumb_filePath.putBytes(thumb_byte);
-
-                            Task<Uri> thumbUriTask = thumb_uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task){
-                                    if (!task.isSuccessful()){
-                                        Toast.makeText(SettingsActivity.this, "Thumb Image Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                        //Toasty.error(SettingsActivity.this, "Thumb Image Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                    profile_thumb_download_url = thumb_filePath.getDownloadUrl().toString();
-                                    return thumb_filePath.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    profile_thumb_download_url = task.getResult().toString();
-                                    Log.e("tag", "thumb url: "+profile_thumb_download_url);
-                                    if (task.isSuccessful()){
-                                        Log.e("tag", "thumb profile updated");
-
-                                        HashMap<String, Object> update_user_data = new HashMap<>();
-                                        update_user_data.put("user_image", profile_download_url);
-                                        update_user_data.put("user_thumb_image", profile_thumb_download_url);
-
-                                        getUserDatabaseReference.updateChildren(new HashMap<String, Object>(update_user_data))
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Log.e("tag", "thumb profile updated");
-                                                        progressDialog.dismiss();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e("tag", "for thumb profile: "+ e.getMessage());
-                                                progressDialog.dismiss();
-                                            }
-                                        });
-                                    }
-
-                                }
-                            });
-
-
-
-                            ////
-                            /*
-                            thumb_uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toasty.warning(SettingsActivity.this,"Error occurred!! "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    if (taskSnapshot != null){
-                                        profile_thumb_download_url = String.valueOf(taskSnapshot.getMetadata().getReference().getDownloadUrl());
-                                        Log.e("tag", "profile_thumb_download_url: "+ profile_thumb_download_url);
-
-                                        HashMap<String, Object> update_user_data = new HashMap<>();
-                                        update_user_data.put("user_image", profile_download_url);
-                                        update_user_data.put("user_thumb_image", profile_thumb_download_url);
-
-                                        getUserDatabaseReference.updateChildren(update_user_data)
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.e("tag", "for thumb profile: "+ e.getMessage());
-                                                    }
-                                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.e("tag", "thumb profile updated");
-                                                progressDialog.dismiss();
-                                                //Toasty.success(SettingsActivity.this,"Profile photo is updated successfully.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-
-                                }
-                            }); */
-
-                            /* addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                    profile_thumb_download_url = task.getResult().toString();
-                                    if (task.isSuccessful()){
-                                         HashMap<String, Object> update__user_data = new HashMap<>();
-                                        update__user_data.put("user_image", profile_download_url);
-                                        update__user_data.put("user_thumb_ima  ge", profile_thumb_download_url);
-
-
-                                        getUserDatabaseReference.updateChildren(update__user_data)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        progressDialog.dismiss();
-                                                        //Toasty.success(SettingsActivity.this,"Profile photo is updated successfully.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-                                }
-                            });
-                            */
-                        }
-
-                    }
-                });
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                //Exception error = result.getError();
-                // handling more event
-                //Toasty.info(SettingsActivity.this,"Image cropping failed.", Toast.LENGTH_SHORT).show();
-                Toast.makeText(SettingsActivity.this,"Image cropping failed.", Toast.LENGTH_LONG).show();
-            }
-        }
+//        if (requestCode == GALLERY_PICK_CODE && resultCode == RESULT_OK && data != null) {
+//            Uri imageUri = data.getData();
+//            // start picker to get image for cropping and then use the image in cropping activity
+//            CropImage.activity()
+//                    .setGuidelines(CropImageView.Guidelines.ON)
+//                    .setAspectRatio(1, 1)
+//                    .start(this);
+//        }
+//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//
+//            if (resultCode == RESULT_OK) {
+//                progressDialog.setMessage("Please wait...");
+//                progressDialog.show();
+//
+//                final Uri resultUri = result.getUri();
+//
+//                File thumb_filePath_Uri = new File(resultUri.getPath());
+//
+//                //final String user_id = mAuth.getCurrentUser().getUid();
+//
+//                /**
+//                 * compress image using compressor library
+//                 * link - https://github.com/zetbaitsu/Compressor
+//                 * */
+//                try{
+//                    thumb_Bitmap = new Compressor(this)
+//                            .setMaxWidth(200)
+//                            .setMaxHeight(200)
+//                            .setQuality(45)
+//                            .compressToBitmap(thumb_filePath_Uri);
+//                } catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//
+//
+//                // firebase storage for uploading the cropped image
+//                final StorageReference filePath = mProfileImgStorageRef.child(pref_nope + ".jpg");
+//
+//                UploadTask uploadTask = filePath.putFile(resultUri);
+//                Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                    @Override
+//                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task){
+//                        if (!task.isSuccessful()){
+//                            //Toasty.error(SettingsActivity.this, "Profile Photo Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(SettingsActivity.this, "Profile Photo Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+//                            //throw task.getException();
+//                        }
+//                        profile_download_url = filePath.getDownloadUrl().toString();
+//                        return filePath.getDownloadUrl();
+//                    }
+//                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Uri> task) {
+//                        if (task.isSuccessful()){
+//                            //Toasty.info(SettingsActivity.this, "Your profile photo is uploaded successfully.", Toast.LENGTH_SHORT).show();
+//                            // retrieve the stored image as profile photo
+//                            profile_download_url = task.getResult().toString();
+//                            Log.e("tag", "profile url: "+profile_download_url);
+//
+//                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                            thumb_Bitmap.compress(Bitmap.CompressFormat.JPEG, 45, outputStream);
+//                            final byte[] thumb_byte = outputStream.toByteArray();
+//
+//                            // firebase storage for uploading the cropped and compressed image
+//                            final StorageReference thumb_filePath = thumb_image_ref.child(pref_nope + "jpg");
+//                            UploadTask thumb_uploadTask = thumb_filePath.putBytes(thumb_byte);
+//
+//                            Task<Uri> thumbUriTask = thumb_uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                                @Override
+//                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task){
+//                                    if (!task.isSuccessful()){
+//                                        Toast.makeText(SettingsActivity.this, "Thumb Image Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+//                                        //Toasty.error(SettingsActivity.this, "Thumb Image Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    profile_thumb_download_url = thumb_filePath.getDownloadUrl().toString();
+//                                    return thumb_filePath.getDownloadUrl();
+//                                }
+//                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Uri> task) {
+//                                    profile_thumb_download_url = task.getResult().toString();
+//                                    Log.e("tag", "thumb url: "+profile_thumb_download_url);
+//                                    if (task.isSuccessful()){
+//                                        Log.e("tag", "thumb profile updated");
+//
+//                                        HashMap<String, Object> update_user_data = new HashMap<>();
+//                                        update_user_data.put("user_image", profile_download_url);
+//                                        update_user_data.put("user_thumb_image", profile_thumb_download_url);
+//
+//                                        getUserDatabaseReference.updateChildren(new HashMap<String, Object>(update_user_data))
+//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        Log.e("tag", "thumb profile updated");
+//                                                        progressDialog.dismiss();
+//                                                    }
+//                                                }).addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Log.e("tag", "for thumb profile: "+ e.getMessage());
+//                                                progressDialog.dismiss();
+//                                            }
+//                                        });
+//                                    }
+//
+//                                }
+//                            });
+//                        }
+//
+//                    }
+//                });
+//
+//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                //Exception error = result.getError();
+//                // handling more event
+//                //Toasty.info(SettingsActivity.this,"Image cropping failed.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SettingsActivity.this,"Image cropping failed.", Toast.LENGTH_LONG).show();
+//            }
+//        }
 
     }
 

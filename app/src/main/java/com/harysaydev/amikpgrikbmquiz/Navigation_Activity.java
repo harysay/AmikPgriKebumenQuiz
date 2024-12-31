@@ -40,7 +40,7 @@ import com.harysaydev.amikpgrikbmquiz.chat.Home.MainChatActivity;
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String getSudahPunyaAkunDariLogin, nope,bolehAksesSoal="boleh";
-    private String kodeAksesUas = "uaspboakuharusjujur";
+    private String kodeAksesUas = "uas";
     private SharedPreferences sharedPreferences;
     TextView nav_header_nam, nav_header_emal;
     ImageView nav_header_imag;
@@ -812,7 +812,7 @@ public class Navigation_Activity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskPbo.getText());
-                        if(task.equals(kodeAksesUas)){
+                        if(task.contains(kodeAksesUas)){
                             getKodeAkses(task, v, "UAS PBO", "uaspbo", "sekaliikutpbo");
                         }else {
                             getKodeAkses(task, v, "Pemrograman Berorientasi Objek", "pbo", "sekaliikutpbo");
@@ -876,7 +876,11 @@ public class Navigation_Activity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskStrukturData.getText());
-                        getKodeAkses(task,v,"Struktur Data","strukturdata","sekaliikutstruktur");
+                        if(task.contains(kodeAksesUas)){
+                            getKodeAkses(task, v, "UAS Struktur Data", "uasstrukturdata", "sekaliikutstruktur");
+                        }else {
+                            getKodeAkses(task, v, "Struktur Data", "strukturdata", "sekaliikutstruktur");
+                        }
                     }
                 })
                 .setNegativeButton("Tutup", null)
@@ -896,7 +900,11 @@ public class Navigation_Activity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskPemrogInternet.getText());
-                        getKodeAkses(task,v,"Pemrograman Internet","pemrogramaninternet","sekaliikutinternet");
+                        if(task.contains(kodeAksesUas)) {
+                            getKodeAkses(task, v, "UAS Pemrograman Internet", "uaspemrogramaninternet", "sekaliikutinternet");
+                        }else {
+                            getKodeAkses(task, v, "Pemrograman Internet", "pemrogramaninternet", "sekaliikutinternet");
+                        }
                     }
                 })
                 .setNegativeButton("Tutup", null)
@@ -963,12 +971,12 @@ public class Navigation_Activity extends AppCompatActivity
                     //To show button click
 //                            cekHakAksesSoal();
                     if(sharedPreferences.getString(sekaliikutkode,"1").equals("0")){
-                        Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti lebih dari 1x", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti lebih dari 1x", Toast.LENGTH_LONG).show();
                         progressBar.dismiss();
                     }
                     else {
                         if (bolehAksesSoal.equals("boleh")) {
-                            if(kodeInputan.equals(kodeAksesUas)){
+                            if(kodeInputan.contains(kodeAksesUas)){
                                 progressBar.dismiss();
                                 Intent intent = new Intent(Navigation_Activity.this, QuestionsUas.class);
                                 intent.putExtra(Message, valueMakulIntent);

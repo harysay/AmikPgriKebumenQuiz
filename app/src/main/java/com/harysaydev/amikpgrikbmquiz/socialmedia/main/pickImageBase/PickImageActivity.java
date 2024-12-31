@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -36,11 +37,13 @@ import com.bumptech.glide.request.target.Target;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.Constants;
 import com.harysaydev.amikpgrikbmquiz.R;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.base.BaseActivity;
-import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.GlideApp;
+//import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.GlideApp;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.ImageUtil;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.LogUtil;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+//import com.theartofdev.edmodo.cropper.CropImage;
+//import com.theartofdev.edmodo.cropper.CropImageView;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 
 public abstract class PickImageActivity<V extends PickImageView, P extends PickImagePresenter<V>> extends BaseActivity<V, P> implements PickImageView {
     private static final String SAVED_STATE_IMAGE_URI = "RegistrationActivity.SAVED_STATE_IMAGE_URI";
@@ -73,11 +76,12 @@ public abstract class PickImageActivity<V extends PickImageView, P extends PickI
 
     @SuppressLint("NewApi")
     public void onSelectImageClick(View view) {
-        if (CropImage.isExplicitCameraPermissionRequired(this)) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
-        } else {
-            CropImage.startPickImageActivity(this);
-        }
+//        if (CropImage.isExplicitCameraPermissionRequired(this)) {
+//            requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+//        } else {
+//            CropImage.startPickImageActivity(this);
+//        }
+        Toast.makeText(getApplicationContext(), "Untuk sementara fitur ini dinonaktifkan", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -87,19 +91,19 @@ public abstract class PickImageActivity<V extends PickImageView, P extends PickI
         }
 
         this.imageUri = imageUri;
-        ImageUtil.loadLocalImage(GlideApp.with(this), imageUri, getImageView(), new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                getProgressView().setVisibility(View.GONE);
-                LogUtil.logDebug(TAG, "Glide Success Loading image from uri : " + imageUri.getPath());
-                return false;
-            }
-        });
+//        ImageUtil.loadLocalImage(GlideApp.with(this), imageUri, getImageView(), new RequestListener<Drawable>() {
+//            @Override
+//            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//                getProgressView().setVisibility(View.GONE);
+//                LogUtil.logDebug(TAG, "Glide Success Loading image from uri : " + imageUri.getPath());
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -107,63 +111,66 @@ public abstract class PickImageActivity<V extends PickImageView, P extends PickI
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // handle result of pick image chooser
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Uri imageUri = CropImage.getPickImageResultUri(this, data);
-
-            if (presenter.isImageFileValid(imageUri)) {
-                this.imageUri = imageUri;
-            }
-
-            // For API >= 23 we need to check specifically that we have permissions to read external storage.
-            if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
-                // request permissions and handle the result in onRequestPermissionsResult()
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
-            } else {
-                // no permissions required or already grunted
-                onImagePikedAction();
-            }
-        }
+        Toast.makeText(getApplicationContext(), "Untuk sementara fitur ini dinonaktifkan", Toast.LENGTH_SHORT).show();
+//        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+//            Uri imageUri = CropImage.getPickImageResultUri(this, data);
+//
+//            if (presenter.isImageFileValid(imageUri)) {
+//                this.imageUri = imageUri;
+//            }
+//
+//            // For API >= 23 we need to check specifically that we have permissions to read external storage.
+//            if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
+//                // request permissions and handle the result in onRequestPermissionsResult()
+//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+//            } else {
+//                // no permissions required or already grunted
+//                onImagePikedAction();
+//            }
+//        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                LogUtil.logDebug(TAG, "CAMERA_CAPTURE_PERMISSIONS granted");
-                CropImage.startPickImageActivity(this);
-            } else {
-                showSnackBar(R.string.permissions_not_granted);
-                LogUtil.logDebug(TAG, "CAMERA_CAPTURE_PERMISSIONS not granted");
-            }
-        }
-        if (requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE) {
-            if (imageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                LogUtil.logDebug(TAG, "PICK_IMAGE_PERMISSIONS granted");
-                onImagePikedAction();
-            } else {
-                showSnackBar(R.string.permissions_not_granted);
-                LogUtil.logDebug(TAG, "PICK_IMAGE_PERMISSIONS not granted");
-            }
-        }
+        Toast.makeText(getApplicationContext(), "Untuk sementara fitur ini dinonaktifkan", Toast.LENGTH_SHORT).show();
+//        if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                LogUtil.logDebug(TAG, "CAMERA_CAPTURE_PERMISSIONS granted");
+//                CropImage.startPickImageActivity(this);
+//            } else {
+//                showSnackBar(R.string.permissions_not_granted);
+//                LogUtil.logDebug(TAG, "CAMERA_CAPTURE_PERMISSIONS not granted");
+//            }
+//        }
+//        if (requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE) {
+//            if (imageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                LogUtil.logDebug(TAG, "PICK_IMAGE_PERMISSIONS granted");
+//                onImagePikedAction();
+//            } else {
+//                showSnackBar(R.string.permissions_not_granted);
+//                LogUtil.logDebug(TAG, "PICK_IMAGE_PERMISSIONS not granted");
+//            }
+//        }
     }
 
     protected void handleCropImageResult(int requestCode, int resultCode, Intent data) {
-        presenter.handleCropImageResult(requestCode, resultCode, data);
+//        presenter.handleCropImageResult(requestCode, resultCode, data);
+        Toast.makeText(getApplicationContext(), "Untuk sementara fitur ini dinonaktifkan", Toast.LENGTH_SHORT).show();
     }
 
-    protected void startCropImageActivity() {
-        if (imageUri == null) {
-            return;
-        }
-
-        CropImage.activity(imageUri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setFixAspectRatio(true)
-                .setMinCropResultSize(Constants.Profile.MIN_AVATAR_SIZE, Constants.Profile.MIN_AVATAR_SIZE)
-                .setRequestedSize(Constants.Profile.MAX_AVATAR_SIZE, Constants.Profile.MAX_AVATAR_SIZE)
-                .start(this);
-    }
+//    protected void startCropImageActivity() {
+//        if (imageUri == null) {
+//            return;
+//        }
+//
+//        CropImage.activity(imageUri)
+//                .setGuidelines(CropImageView.Guidelines.ON)
+//                .setFixAspectRatio(true)
+//                .setMinCropResultSize(Constants.Profile.MIN_AVATAR_SIZE, Constants.Profile.MIN_AVATAR_SIZE)
+//                .setRequestedSize(Constants.Profile.MAX_AVATAR_SIZE, Constants.Profile.MAX_AVATAR_SIZE)
+//                .start(this);
+//    }
 
     @Override
     public void hideLocalProgress() {

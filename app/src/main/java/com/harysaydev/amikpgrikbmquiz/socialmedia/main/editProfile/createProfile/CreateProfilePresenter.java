@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.editProfile.EditProfilePresenter;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.utils.PreferencesUtil;
 
@@ -54,6 +54,6 @@ class CreateProfilePresenter extends EditProfilePresenter<CreateProfileView> {
     protected void onProfileUpdatedSuccessfully() {
         super.onProfileUpdatedSuccessfully();
         PreferencesUtil.setProfileCreated(context, true);
-        profileManager.addRegistrationToken(FirebaseInstanceId.getInstance().getToken(), profile.getId());
+        profileManager.addRegistrationToken(FirebaseMessaging.getInstance().getToken().toString(), profile.getId());
     }
 }

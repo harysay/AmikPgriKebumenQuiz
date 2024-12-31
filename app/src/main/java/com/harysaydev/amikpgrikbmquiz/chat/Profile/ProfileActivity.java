@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,7 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.harysaydev.amikpgrikbmquiz.chat.ProfileSetting.SettingsActivity;
+//import com.harysaydev.amikpgrikbmquiz.chat.ProfileSetting.SettingsActivity;
 import com.harysaydev.amikpgrikbmquiz.R;
 import com.squareup.picasso.Picasso;
 
@@ -250,8 +251,9 @@ public class ProfileActivity extends AppCompatActivity {
             go_my_profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+//                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Untuk sementara menu setting tidak bisa diakses", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });

@@ -35,7 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.interactors.ProfileInteractor;
 
 public class LogoutHelper {
@@ -47,7 +47,7 @@ public class LogoutHelper {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             ProfileInteractor.getInstance(fragmentActivity.getApplicationContext())
-                    .removeRegistrationToken(FirebaseInstanceId.getInstance().getToken(), user.getUid());
+                    .removeRegistrationToken(FirebaseMessaging.getInstance().getToken().toString(), user.getUid());
 
             for (UserInfo profile : user.getProviderData()) {
                 String providerId = profile.getProviderId();

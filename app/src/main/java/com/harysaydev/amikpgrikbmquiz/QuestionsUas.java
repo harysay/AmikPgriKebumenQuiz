@@ -48,11 +48,13 @@ import com.harysaydev.amikpgrikbmquiz.soal.Literatur;
 import com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjek;
 import com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjekUas;
 import com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternet;
+import com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternetUas;
 import com.harysaydev.amikpgrikbmquiz.soal.Pengetahuankampus;
 import com.harysaydev.amikpgrikbmquiz.soal.Pengetahuanumum;
 import com.harysaydev.amikpgrikbmquiz.soal.Profesi;
 import com.harysaydev.amikpgrikbmquiz.soal.RekPerangkatLunak;
 import com.harysaydev.amikpgrikbmquiz.soal.StrukturData;
+import com.harysaydev.amikpgrikbmquiz.soal.StrukturDataUas;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -75,6 +77,8 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
     Button play_button;
     String get;
     com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjekUas PemBerorientasiObjek;
+    com.harysaydev.amikpgrikbmquiz.soal.StrukturDataUas StrukDataUas;
+    com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternetUas PemrogramanInternetUas;
     int jumSoal=60,totalRecord,backsebelummulai;
 
     public int visibility = 0, komputer = 0, kebangsaan = 0, kampus = 0, pengetahuanumum = 0, ekonomiakuntansi = 0, bahasainggris = 0, literatur = 0, intelegensi = 0, kepribadian = 0, profesi = 0,grafikom = 0,kecerdasan = 0,rpl = 0,pbo = 0,struktur=0,pemrograminternet=0, i, j = 0, soalKe = 0, l = 0;
@@ -108,9 +112,9 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();//recieving the intent send by the Navigation activity
         get = intent.getStringExtra(Navigation_Activity.Message);//converting that intent message to string using the getStringExtra() method
-        if(get.equals("strukturdata")){
+        if(get.equals("uasstrukturdata")){
             idMapel = "1";
-            namaMapel = "Struktur Data";
+            namaMapel = "UAS Struktur Data";
             showLockScreenDialog();
         } else if(get.equals("bahasainggris")){
             idMapel = "2";
@@ -162,7 +166,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
         }else if(get.equals("komputer")){
             idMapel = "16";
             namaMapel = "Komputer";
-        }else if(get.equals("pemrogramaninternet")){
+        }else if(get.equals("uaspemrogramaninternet")){
             idMapel = "17";
             namaMapel = "Pemrograman Internet";
             showLockScreenDialog();
@@ -193,6 +197,16 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
         PemBerorientasiObjek.openDatabase();
         PemBerorientasiObjek.getWritableDatabase();
 
+        StrukDataUas = new StrukturDataUas(this);
+        StrukDataUas.createDatabase();
+        StrukDataUas.openDatabase();
+        StrukDataUas.getWritableDatabase();
+
+        PemrogramanInternetUas = new PemrogramanInternetUas(this);
+        PemrogramanInternetUas.createDatabase();
+        PemrogramanInternetUas.openDatabase();
+        PemrogramanInternetUas.getWritableDatabase();
+
 
         //Till here we are linking the database file
         OptA = (Button) findViewById(R.id.OptionA);
@@ -209,7 +223,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
         info = (TextView) findViewById(R.id.pesansebelummulai);
         AndroidNetworking.initialize(getApplicationContext()); //inisialisasi FAN
         TextView pesanSebelumMulai = findViewById(R.id.pesansebelummulai);
-        String teksHtml = "Jika Anda menekan tombol <b>PLAY</b> berarti Anda sudah yakin untuk memulai ujian dan <b>HARUS</b> <u>menyelesaikan sampai pertanyaan terakhir</u> tanpa berpindah aplikasi,tanpa membuka notifikasi maupun melakukan <i>splitscreen, screenshoot</i> dan <i>record screen</i>. <b>Disarankan memperpanjang waktu lockscreen lebih dari 1 menit</b>. Fokus pada soal masing-masing dan jangan sampai salah tekan jawaban, karena <b>tidak dapat kembali ke pertanyaan sebelumnya</b>. Perhatikan waktu yang diberikan untuk setiap pertanyaan, karena jika waktu habis otomatis lanjut ke pertanyaan selanjutya.<br>SELAMAT MENGERJAKAN DENGAN JUJUR";
+        String teksHtml = "Jika Anda menekan tombol <b>PLAY</b> berarti Anda sudah yakin untuk memulai UAS dan <b>HARUS</b> <u>menyelesaikan sampai pertanyaan terakhir</u> tanpa berpindah aplikasi,tanpa membuka notifikasi maupun melakukan <i>splitscreen, screenshoot</i> dan <i>record screen</i>. <b>Disarankan memperpanjang waktu lockscreen lebih dari 1 menit</b>. Fokus pada soal masing-masing dan jangan sampai salah tekan jawaban, karena <b>tidak dapat kembali ke pertanyaan sebelumnya</b>. Perhatikan waktu yang diberikan untuk setiap pertanyaan, karena jika waktu habis otomatis lanjut ke pertanyaan selanjutya.<br>SELAMAT MENGERJAKAN DENGAN JUJUR";
         Spanned teksDiformat = Html.fromHtml(teksHtml);
         pesanSebelumMulai.setText(teksDiformat);
         //if(get.equals("pbo")||get.equals("komputer")||get.equals("ekonomiakuntansi")||get.equals("profesi")||get.equals("grafikakomp")){
@@ -219,6 +233,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         progressBarCircle = (ProgressBar)findViewById(R.id.progressBarCircle);
         textViewTime = (TextView) findViewById(R.id.textViewTime);
+        setTitle(namaMapel);
         setProgressBarValues();
     }
 
@@ -264,7 +279,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             editorku.putString("sekaliikutpbo", "0");
             editorku.commit();
         }
-        else if (get.equals("strukturdata") && shared.getInt("Strukturdata", 0) < l) {
+        else if (get.equals("uasstrukturdata") && shared.getInt("Strukturdata", 0) < l) {
             editor.putInt("StrukturData", l * 10).apply();
             editorku.putString("sekaliikutstruktur", "0");
             editorku.commit();
@@ -274,7 +289,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             editorku.putString("sekaliikutgrafika", "0");
             editorku.commit();
         }
-        else if (get.equals("pemrogramaninternet") && shared.getInt("PemrogInternet", 0) < l) {
+        else if (get.equals("uaspemrogramaninternet") && shared.getInt("PemrogInternet", 0) < l) {
             editor.putInt("PemrogInternet", l * 10).apply();
             editorku.putString("sekaliikutinternet", "0");
             editorku.commit();
@@ -303,9 +318,9 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     editorku.putString("sekaliikutrpl", "0");
                 }else if(get.equals("kecerdasan")){
                     editorku.putString("sekaliikutkecerdasan", "0");
-                }else if(get.equals("strukturdata")){
+                }else if(get.equals("uasstrukturdata")){
                     editorku.putString("sekaliikutstruktur", "0");
-                }else if(get.equals("pemrogramaninternet")){
+                }else if(get.equals("uaspemrogramaninternet")){
                     editorku.putString("sekaliikutinternet", "0");
                 }else if(get.equals("jaringankomputer")){
                     editorku.putString("sekaliikutjarkom", "0");
@@ -329,9 +344,9 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                         editor.putFloat("getNilaiRpl", x1).apply();
                     }else if(get.equals("kecerdasan")){
                         editor.putFloat("getNilaiKecerdasanbuatan", x1).apply();
-                    }else if(get.equals("strukturdata")){
+                    }else if(get.equals("uasstrukturdata")){
                         editor.putFloat("getNilaiStrukturdata", x1).apply();
-                    }else if(get.equals("pemrogramaninternet")){
+                    }else if(get.equals("uaspemrogramaninternet")){
                         editor.putFloat("getNilaiPemrogInternet", x1).apply();
                     }else if(get.equals("jaringankomputer")){
                         editor.putFloat("getNilaiJaringanKomputer", x1).apply();
@@ -399,7 +414,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             //timerStatus = TimerStatus.STARTED;
             if (global != null) {
                 if (global.equals("C")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("strukturdata")||get.equals("pemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
                         if (vie.getId() == R.id.OptionA) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -433,7 +448,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
 
 
                 } else if (global.equals("D")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("strukturdata")||get.equals("pemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
                         if (vie.getId() == R.id.OptionB) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -465,7 +480,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     }
 
                 } else if (global.equals("A")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("strukturdata")||get.equals("pemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
                         if (vie.getId() == R.id.OptionC) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -498,7 +513,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     }
 
                 } else if (global.equals("B")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("strukturdata")||get.equals("pemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
                         if (vie.getId() == R.id.OptionD) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -564,6 +579,58 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                 Optd = PemBerorientasiObjek.readOptionD(list.get(j));
                 global = PemBerorientasiObjek.readAnswer(list.get(j));
                 Pembahas = PemBerorientasiObjek.readPembahasan(list.get(j));
+                j++;
+            }else {
+                variable=0; // untuk memenuhkan syarat mengakhiri soal
+                countDownTimer.cancel();
+                actionAfterFinishCount();
+            }
+        } else if (get.equals("uasstrukturdata")) { //c15
+            if (struktur == 0) {
+                totalRecord = StrukDataUas.bacaJumlahRecord();
+                if(totalRecord<jumSoal){
+                    jumSoal = totalRecord;
+                }
+                for (i = 1; i <= jumSoal; i++) {
+                    list.add(new Integer(i));
+                }
+                Collections.shuffle(list);
+                struktur=1;
+            }
+            if(soalKe<jumSoal){
+                Ques = StrukDataUas.readQuestion(list.get(j));
+                Opta = StrukDataUas.readOptionA(list.get(j));
+                Optb = StrukDataUas.readOptionB(list.get(j));
+                Optc = StrukDataUas.readOptionC(list.get(j));
+                Optd = StrukDataUas.readOptionD(list.get(j));
+                global = StrukDataUas.readAnswer(list.get(j));
+                Pembahas = StrukDataUas.readPembahasan(list.get(j));
+                j++;
+            }else {
+                variable=0; // untuk memenuhkan syarat mengakhiri soal
+                countDownTimer.cancel();
+                actionAfterFinishCount();
+            }
+        }else if (get.equals("uaspemrogramaninternet")) {
+            if (struktur == 0) {
+                totalRecord = PemrogramanInternetUas.bacaJumlahRecord();
+                if(totalRecord<jumSoal){
+                    jumSoal = totalRecord;
+                }
+                for (i = 1; i <= jumSoal; i++) {
+                    list.add(new Integer(i));
+                }
+                Collections.shuffle(list);
+                struktur=1;
+            }
+            if(soalKe<jumSoal){
+                Ques = PemrogramanInternetUas.readQuestion(list.get(j));
+                Opta = PemrogramanInternetUas.readOptionA(list.get(j));
+                Optb = PemrogramanInternetUas.readOptionB(list.get(j));
+                Optc = PemrogramanInternetUas.readOptionC(list.get(j));
+                Optd = PemrogramanInternetUas.readOptionD(list.get(j));
+                global = PemrogramanInternetUas.readAnswer(list.get(j));
+                Pembahas = PemrogramanInternetUas.readPembahasan(list.get(j));
                 j++;
             }else {
                 variable=0; // untuk memenuhkan syarat mengakhiri soal

@@ -27,7 +27,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.Constants;
 import com.harysaydev.amikpgrikbmquiz.R;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.base.BasePresenter;
@@ -54,7 +54,7 @@ class LoginPresenter extends BasePresenter<LoginView> {
                 } else {
                     PreferencesUtil.setProfileCreated(context, true);
                     ProfileInteractor.getInstance(context.getApplicationContext())
-                            .addRegistrationToken(FirebaseInstanceId.getInstance().getToken(), userId);
+                            .addRegistrationToken(FirebaseMessaging.getInstance().getToken().toString(), userId);
                 }
 
                 view.hideProgress();

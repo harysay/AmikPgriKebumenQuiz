@@ -64,7 +64,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
-                    android:text="Version b1.26122022"
+                    android:text="Version b32.09072024"
                     android:textSize="24sp" />
             </RelativeLayout>
                     <TextView

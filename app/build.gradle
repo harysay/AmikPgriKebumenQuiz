@@ -21,10 +21,10 @@ android {
         }
         vectorDrawables.useSupportLibrary = true
         applicationId "com.harysaydev.amikpgrikbmquiz"
-        minSdk 19
+        minSdk 23
         targetSdk 34
-        versionCode 31
-        versionName "b31.05012024"
+        versionCode 33
+        versionName "b33.12112024"
         multiDexEnabled true
     }
 
@@ -45,82 +45,83 @@ android {
         }
     }
     packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META_INF/LICENSE-FIREBASE.txt'
-        exclude 'META-INF/NOTICE'
-    }
-    lintOptions {
-        disable 'Wakelock'
+        resources {
+            excludes += ['META-INF/LICENSE', 'META_INF/LICENSE-FIREBASE.txt', 'META-INF/NOTICE']
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace 'com.harysaydev.amikpgrikbmquiz'
+    lint {
+        disable 'Wakelock'
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'androidx.appcompat:appcompat-resources:1.5.1'
-    implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
-    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation 'androidx.appcompat:appcompat-resources:1.7.0'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.2.0'
+    implementation 'androidx.browser:browser:1.8.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.github.traex.rippleeffect:library:1.3'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.mikhaellopez:circularprogressbar:1.1.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.amitshekhar.android:android-networking:1.0.2'
-    implementation 'com.google.android.play:app-update:2.0.1'
+    implementation 'com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.4'
+//    implementation 'com.amitshekhar.android:android-networking:1.0.2'
+//    implementation 'com.google.android.play:app-update:2.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     //    implementation 'com.google.android.gms:play-services-ads:16.0.0'
     // Firebase
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.android.gms:play-services-base:18.2.0'
-    implementation 'com.google.firebase:firebase-database:20.1.0'
-    implementation 'com.google.firebase:firebase-auth:21.1.0'
-    implementation 'com.google.firebase:firebase-storage:20.1.0'
-    implementation 'com.google.firebase:firebase-config:21.2.0'
-    implementation 'com.google.firebase:firebase-messaging:20.0.0'
-    implementation 'com.google.firebase:firebase-analytics:21.2.0'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.android.gms:play-services-base:18.5.0'
+    implementation 'com.google.firebase:firebase-database:21.0.0'
+    implementation 'com.google.firebase:firebase-auth:23.1.0'
+    implementation 'com.google.firebase:firebase-storage:21.0.1'
+    implementation 'com.google.firebase:firebase-config:22.0.1'
+    implementation 'com.google.firebase:firebase-messaging:24.0.3'
+    implementation 'com.google.firebase:firebase-analytics:22.1.2'
     // FirebaseUI for Firebase Realtime Database for chat
-    implementation 'com.firebaseui:firebase-ui-database:3.3.1'
+    implementation 'com.firebaseui:firebase-ui-database:8.0.0'
     // MVP
     implementation 'com.hannesdorfmann.mosby3:mvp:3.1.0'
     // Plain MVP
     // Social
-    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
     //implementation "com.google.android.gms:play-services-tagmanager:15.0.2"
     implementation('com.facebook.android:facebook-android-sdk:4.17.0') {
         exclude group: "com.google.android.gms"
     }
     // Images
     implementation 'com.github.bumptech.glide:glide:4.8.0'
-    annotationProcessor 'androidx.annotation:annotation:1.5.0'
+    annotationProcessor 'androidx.annotation:annotation:1.9.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     //    implementation 'com.google.firebase:firebase-ads:17.1.2'
     //implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.firebase:firebase-client-android:2.5.2'
     implementation 'com.github.paolorotolo:appintro:4.1.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     //chat library
     // circle image view library
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     // cropping image library
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
+//    implementation "com.vanniktech:android-image-cropper:4.5.0"
+    implementation 'com.github.CanHub:Android-Image-Cropper:4.3.0'
     // Picasso Library
     implementation 'com.squareup.picasso:picasso:2.71828'
     // HTTP & HTTP/2 client for Android
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     // image Compressor library
-    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'id.zelory:compressor:3.0.1'
     //RememberEditText
     implementation 'cn.zhaiyifan:rememberedittext:0.9.0'
     //screenshoot layar

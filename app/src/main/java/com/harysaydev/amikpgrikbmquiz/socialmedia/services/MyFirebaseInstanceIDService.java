@@ -18,7 +18,7 @@
 
 package com.harysaydev.amikpgrikbmquiz.socialmedia.services;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 //import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.harysaydev.amikpgrikbmquiz.socialmedia.main.interactors.ProfileInteractor;
@@ -42,7 +42,7 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
 
     public void onTokenRefresh() {
         // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        String refreshedToken = FirebaseMessaging.getInstance().getToken().toString();
         LogUtil.logDebug(TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or

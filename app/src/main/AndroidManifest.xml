@@ -80,7 +80,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QuestionsUas"
-            android:label="Questions UAS"
+            android:label="Soal UAS"
             android:screenOrientation="portrait"
             android:resizeableActivity="false"
             android:theme="@style/AppTheme.NoActionBar" />
