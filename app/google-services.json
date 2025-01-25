@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "142636601998",
-    "firebase_url": "https://amik-pgri-kebumen-quiz.firebaseio.com",
-    "project_id": "amik-pgri-kebumen-quiz",
-    "storage_bucket": "amik-pgri-kebumen-quiz.appspot.com"
+    "project_number": "isikan projek number firebase",
+    "firebase_url": "isikan urlnya",
+    "project_id": "masukan project id",
+    "storage_bucket": "masukan storage bucket.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:142636601998:android:bac04c1724819d6e",
+        "mobilesdk_app_id": "masukan app id",
         "android_client_info": {
-          "package_name": "com.harysaydev.amikpgrikbmquiz"
+          "package_name": "package name mu apa"
         }
       },
       "oauth_client": [
         {
-          "client_id": "142636601998-5ctmad8m3m2tq8oe5kr5sd2qq3mie7nn.apps.googleusercontent.com",
+          "client_id": "client id",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.harysaydev.amikpgrikbmquiz",
-            "certificate_hash": "f351669641fc18aa6f3238f7ba9b853abe7ec7e8"
+            "package_name": "package name mu ap",
+            "certificate_hash": "masukan sertifikat hash mu"
           }
         },
         {
-          "client_id": "142636601998-kq8cas3bgqg7loqeifesmmq81poemdis.apps.googleusercontent.com",
+          "client_id": "client id mu berapa",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCjq7EbJWQY-hPD3DT1rdWk3eCoDGQhXaY"
+          "current_key": "Masukan key mu"
         }
       ],
       "services": {
@@ -40,59 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "142636601998-kq8cas3bgqg7loqeifesmmq81poemdis.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:142636601998:android:dc3317d33d2d3ab1",
-        "android_client_info": {
-          "package_name": "com.harysaydev.amikpgrikbmquiz"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "142636601998-sjucit405gvjgnkgc69b432glkduttjr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.harysaydev.amikpgrikbmquiz",
-            "certificate_hash": "46f981a5c1ee4aa257c277a5117db8e09bb8c953"
-          }
-        },
-        {
-          "client_id": "142636601998-5ctmad8m3m2tq8oe5kr5sd2qq3mie7nn.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.harysaydev.amikpgrikbmquiz",
-            "certificate_hash": "f351669641fc18aa6f3238f7ba9b853abe7ec7e8"
-          }
-        },
-        {
-          "client_id": "142636601998-kq8cas3bgqg7loqeifesmmq81poemdis.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCjq7EbJWQY-hPD3DT1rdWk3eCoDGQhXaY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "142636601998-kq8cas3bgqg7loqeifesmmq81poemdis.apps.googleusercontent.com",
+              "client_id": "client id",
               "client_type": 3
             }
           ]
