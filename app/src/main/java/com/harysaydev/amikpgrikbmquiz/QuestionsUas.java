@@ -34,27 +34,11 @@ import androidx.fragment.app.FragmentManager;
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.material.snackbar.Snackbar;
 import com.harysaydev.amikpgrikbmquiz.bottomsheet.MainFragmentBottomsheet;
-import com.harysaydev.amikpgrikbmquiz.soal.Bahasainggris;
-import com.harysaydev.amikpgrikbmquiz.soal.Desainweb;
-import com.harysaydev.amikpgrikbmquiz.soal.Ekonomiakuntansi;
-import com.harysaydev.amikpgrikbmquiz.soal.Grafikakomputer;
-import com.harysaydev.amikpgrikbmquiz.soal.Intelegensi;
-import com.harysaydev.amikpgrikbmquiz.soal.JaringanKomputer;
-import com.harysaydev.amikpgrikbmquiz.soal.Kebangsaan;
-import com.harysaydev.amikpgrikbmquiz.soal.Kecerdasanbuatan;
-import com.harysaydev.amikpgrikbmquiz.soal.Kepribadian;
-import com.harysaydev.amikpgrikbmquiz.soal.Komputer;
-import com.harysaydev.amikpgrikbmquiz.soal.Literatur;
-import com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjek;
+import com.harysaydev.amikpgrikbmquiz.soal.DesainwebUas;
 import com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjekUas;
-import com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternet;
 import com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternetUas;
-import com.harysaydev.amikpgrikbmquiz.soal.Pengetahuankampus;
-import com.harysaydev.amikpgrikbmquiz.soal.Pengetahuanumum;
-import com.harysaydev.amikpgrikbmquiz.soal.Profesi;
-import com.harysaydev.amikpgrikbmquiz.soal.RekPerangkatLunak;
-import com.harysaydev.amikpgrikbmquiz.soal.StrukturData;
 import com.harysaydev.amikpgrikbmquiz.soal.StrukturDataUas;
+import com.harysaydev.amikpgrikbmquiz.soal.DesainGrafisUas;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -79,9 +63,12 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
     com.harysaydev.amikpgrikbmquiz.soal.PemBerorientasiObjekUas PemBerorientasiObjek;
     com.harysaydev.amikpgrikbmquiz.soal.StrukturDataUas StrukDataUas;
     com.harysaydev.amikpgrikbmquiz.soal.PemrogramanInternetUas PemrogramanInternetUas;
+    com.harysaydev.amikpgrikbmquiz.soal.DesainGrafisUas DesainGrafisUas;
+
+    com.harysaydev.amikpgrikbmquiz.soal.DesainwebUas DesainWebUas;
     int jumSoal=60,totalRecord,backsebelummulai;
 
-    public int visibility = 0, komputer = 0, kebangsaan = 0, kampus = 0, pengetahuanumum = 0, ekonomiakuntansi = 0, bahasainggris = 0, literatur = 0, intelegensi = 0, kepribadian = 0, profesi = 0,grafikom = 0,kecerdasan = 0,rpl = 0,pbo = 0,struktur=0,pemrograminternet=0, i, j = 0, soalKe = 0, l = 0;
+    public int visibility = 0,desaingrafis = 0, desainweb = 0, kebangsaan = 0, kampus = 0, pengetahuanumum = 0, ekonomiakuntansi = 0, bahasainggris = 0, literatur = 0, intelegensi = 0, kepribadian = 0, profesi = 0,grafikom = 0,kecerdasan = 0,rpl = 0,pbo = 0,struktur=0,pemrograminternet=0, i, j = 0, soalKe = 0, l = 0;
     String global = null, Ques, Opta, Optb, Optc, Optd, Pembahas;
     ArrayList<Integer> list = new ArrayList<Integer>();
     Toast toast;
@@ -92,12 +79,6 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
     ProgressDialog mProgressDialog;
     //MainFragmentBottomsheet fragment;
     View viewLemparan;
-
-    private enum TimerStatus {
-        STARTED,
-        STOPPED
-    }
-    private TimerStatus timerStatus = TimerStatus.STOPPED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +93,11 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();//recieving the intent send by the Navigation activity
         get = intent.getStringExtra(Navigation_Activity.Message);//converting that intent message to string using the getStringExtra() method
-        if(get.equals("uasstrukturdata")){
+        if(get.equals("uasdesaingrafis")){
+            idMapel = "20"; // Sesuaikan ID jika perlu
+            namaMapel = "UAS Desain Grafis";
+            showLockScreenDialog();
+        } else if(get.equals("uasstrukturdata")){
             idMapel = "1";
             namaMapel = "UAS Struktur Data";
             showLockScreenDialog();
@@ -174,9 +159,9 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             idMapel = "18";
             namaMapel = "Jaringan Komputer";
             showLockScreenDialog();
-        }else if(get.equals("desainweb")){
+        }else if(get.equals("uasdesainweb")){
             idMapel = "19";
-            namaMapel = "Desain Web";
+            namaMapel = "UAS Desain Web";
             showLockScreenDialog();
         }else{
             idMapel = "0";
@@ -206,6 +191,16 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
         PemrogramanInternetUas.createDatabase();
         PemrogramanInternetUas.openDatabase();
         PemrogramanInternetUas.getWritableDatabase();
+
+        DesainWebUas = new DesainwebUas(this);
+        DesainWebUas.createDatabase();
+        DesainWebUas.openDatabase();
+        DesainWebUas.getWritableDatabase();
+
+        DesainGrafisUas = new DesainGrafisUas(this);
+        DesainGrafisUas.createDatabase();
+        DesainGrafisUas.openDatabase();
+        DesainGrafisUas.getWritableDatabase();
 
 
         //Till here we are linking the database file
@@ -299,9 +294,14 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             editorku.putString("sekaliikutjarkom", "0");
             editorku.commit();
         }
-        else if (get.equals("desainweb") && shared.getInt("DesainWeb", 0) < l) {
+        else if (get.equals("uasdesainweb") && shared.getInt("DesainWeb", 0) < l) {
             editor.putInt("DesainWeb", l * 10).apply();
             editorku.putString("sekaliikutdesainweb", "0");
+            editorku.commit();
+        }
+        else if (get.equals("uasdesaingrafis") && shared.getInt("DesainGrafis", 0) < l) {
+            editor.putInt("DesainGrafis", l * 10).apply();
+            editorku.putString("sekaliikutdesaingrafis", "0");
             editorku.commit();
         }
         if(variable==0) {
@@ -324,8 +324,10 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     editorku.putString("sekaliikutinternet", "0");
                 }else if(get.equals("jaringankomputer")){
                     editorku.putString("sekaliikutjarkom", "0");
-                }else if(get.equals("desainweb")){
+                }else if(get.equals("uasdesainweb")){
                     editorku.putString("sekaliikutdesainweb", "0");
+                }else if(get.equals("uasdesaingrafis")){
+                    editorku.putString("sekaliikutdesaingrafis", "0");
                 }
                 editorku.commit();
                 Intent intent = new Intent(QuestionsUas.this, Result.class);
@@ -350,8 +352,10 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                         editor.putFloat("getNilaiPemrogInternet", x1).apply();
                     }else if(get.equals("jaringankomputer")){
                         editor.putFloat("getNilaiJaringanKomputer", x1).apply();
-                    }else if(get.equals("desainweb")){
+                    }else if(get.equals("uasdesainweb")){
                         editor.putFloat("getNilaiDesainWeb", x1).apply();
+                    }else if(get.equals("uasdesaingrafis")){
+                        editor.putFloat("getNilaiDesainGrafis", x1).apply();
                     }
                 startActivity(intent);
                 finish();
@@ -409,12 +413,13 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
             visibility = 1;
         }
     }
+    //pengacakan soal dan jawaban
     private void actionPilihJawaban(View vie) {
         if(soalKe<=jumSoal){
             //timerStatus = TimerStatus.STARTED;
             if (global != null) {
                 if (global.equals("C")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("uasdesainweb")||get.equals("uasdesaingrafis")){
                         if (vie.getId() == R.id.OptionA) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -448,7 +453,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
 
 
                 } else if (global.equals("D")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("uasdesainweb")||get.equals("uasdesaingrafis")){
                         if (vie.getId() == R.id.OptionB) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -480,7 +485,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     }
 
                 } else if (global.equals("A")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("uasdesainweb")||get.equals("uasdesaingrafis")){
                         if (vie.getId() == R.id.OptionC) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -513,7 +518,7 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                     }
 
                 } else if (global.equals("B")) {
-                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("desainweb")){
+                    if(get.equals("uaspbo")||get.equals("grafikakomp")||get.equals("rpl")||get.equals("kecerdasan")||get.equals("uasstrukturdata")||get.equals("uaspemrogramaninternet")||get.equals("jaringankomputer")||get.equals("uasdesainweb")||get.equals("uasdesaingrafis")){
                         if (vie.getId() == R.id.OptionD) {
                             //Here we use the snackbar because if we use the toast then they will be stacked an user cannot idetify which questions answer is it showing
                             Snackbar.make(vie, "Jawaban Benar Tidak Ditampilkan! ☺", Snackbar.LENGTH_SHORT).show();
@@ -634,6 +639,58 @@ public class QuestionsUas extends AppCompatActivity implements View.OnClickListe
                 j++;
             }else {
                 variable=0; // untuk memenuhkan syarat mengakhiri soal
+                countDownTimer.cancel();
+                actionAfterFinishCount();
+            }
+        }else if (get.equals("uasdesainweb")) {
+            if (desainweb == 0) {
+                totalRecord = DesainWebUas.bacaJumlahRecord();
+                if(totalRecord < jumSoal){
+                    jumSoal = totalRecord;
+                }
+                for (i = 1; i <= jumSoal; i++) {
+                    list.add(new Integer(i));
+                }
+                Collections.shuffle(list);
+                desainweb = 1;
+            }
+            if(soalKe < jumSoal){
+                Ques = DesainWebUas.readQuestion(list.get(j));
+                Opta = DesainWebUas.readOptionA(list.get(j));
+                Optb = DesainWebUas.readOptionB(list.get(j));
+                Optc = DesainWebUas.readOptionC(list.get(j));
+                Optd = DesainWebUas.readOptionD(list.get(j));
+                global = DesainWebUas.readAnswer(list.get(j));
+                Pembahas = DesainWebUas.readPembahasan(list.get(j));
+                j++;
+            } else {
+                variable = 0;
+                countDownTimer.cancel();
+                actionAfterFinishCount();
+            }
+        }else if (get.equals("uasdesaingrafis")) {
+            if (desaingrafis == 0) {
+                totalRecord = DesainGrafisUas.bacaJumlahRecord();
+                if(totalRecord < jumSoal){
+                    jumSoal = totalRecord;
+                }
+                for (i = 1; i <= jumSoal; i++) {
+                    list.add(new Integer(i));
+                }
+                Collections.shuffle(list);
+                desaingrafis = 1;
+            }
+            if(soalKe < jumSoal){
+                Ques = DesainGrafisUas.readQuestion(list.get(j));
+                Opta = DesainGrafisUas.readOptionA(list.get(j));
+                Optb = DesainGrafisUas.readOptionB(list.get(j));
+                Optc = DesainGrafisUas.readOptionC(list.get(j));
+                Optd = DesainGrafisUas.readOptionD(list.get(j));
+                global = DesainGrafisUas.readAnswer(list.get(j));
+                Pembahas = DesainGrafisUas.readPembahasan(list.get(j));
+                j++;
+            } else {
+                variable = 0;
                 countDownTimer.cancel();
                 actionAfterFinishCount();
             }

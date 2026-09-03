@@ -45,7 +45,7 @@ public class Navigation_Activity extends AppCompatActivity
     TextView nav_header_nam, nav_header_emal;
     ImageView nav_header_imag;
     public final static String Message = "com.harysaydev.amikpgrikbmquiz.MESSAGE";
-    Button komputer, kebangsaan, kampus, pengetahuanumum, ekonomiakuntansi, bahasainggris, literatur, intelegensi, kepribadian, profesi, grafikakomp,kecerdasan,rpl,pbo,strukturdata,pemroginternet,jarkom,desainweb;
+    Button komputer, kebangsaan, kampus, pengetahuanumum, ekonomiakuntansi, bahasainggris, literatur, intelegensi, kepribadian, profesi, grafikakomp,kecerdasan,rpl,pbo,strukturdata,pemroginternet,jarkom,desainweb,desaingrafis;
     private ProgressDialog progressBar;
     MediaPlayer mediaPlayer;
     private static final String TAG = "NavigationMenu";
@@ -110,6 +110,7 @@ public class Navigation_Activity extends AppCompatActivity
         pemroginternet = (Button) findViewById(R.id.idpemrogramaninternet);
         jarkom = (Button) findViewById(R.id.idjarkom);
         desainweb = (Button) findViewById(R.id.iddesainweb);
+        desaingrafis = (Button) findViewById(R.id.iddesaingrafis);
 
         komputer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -586,6 +587,32 @@ public class Navigation_Activity extends AppCompatActivity
 
             }
         });
+        desaingrafis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CheckNetwork.isInternetAvailable(Navigation_Activity.this)) //returns true if internet available
+                {
+                    showDialogDesainGrafis(Navigation_Activity.this,v);
+                }else {
+                    try {
+                        AlertDialog alertDialog = new AlertDialog.Builder(Navigation_Activity.this).create();
+
+                        alertDialog.setTitle("No Internet");
+                        alertDialog.setMessage("Check your internet connectivity and try again");
+                        alertDialog.setIcon(android.R.drawable.stat_sys_warning);
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int n) {
+                                dialog.cancel();
+                            }
+                        });
+                        alertDialog.show();
+                    } catch (Exception e) {
+                        Log.d(TAG, "Log tidak konek: "+e.getMessage());
+                    }
+                }
+
+            }
+        });
 
     }
 
@@ -932,7 +959,7 @@ public class Navigation_Activity extends AppCompatActivity
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE); // Menampilkan keyboard saat dialog ditampilkan
         dialog.show();
     }
-    private void showDialogDesainWeb(Context c,View v) {
+    private void showDialogDesainWeb(Context c, View v) {
         final EditText taskDesainWeb = new EditText(c);
         taskDesainWeb.requestFocus();
         taskDesainWeb.setFocusableInTouchMode(true);
@@ -944,12 +971,43 @@ public class Navigation_Activity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskDesainWeb.getText());
-                        getKodeAkses(task,v,"Desain Web","desainweb","sekaliikutdesainweb");
+                        // Logika ditambahkan di sini
+                        if (task.contains(kodeAksesUas)) {
+                            getKodeAkses(task, v, "UAS Desain Web", "uasdesainweb", "sekaliikutdesainweb");
+                        } else {
+                            getKodeAkses(task, v, "Desain Web", "desainweb", "sekaliikutdesainweb");
+                        }
                     }
                 })
                 .setNegativeButton("Tutup", null)
                 .create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE); // Menampilkan keyboard saat dialog ditampilkan
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+    }
+
+    private void showDialogDesainGrafis(Context c, View v) {
+        final EditText taskDesainGrafis = new EditText(c);
+        taskDesainGrafis.requestFocus();
+        taskDesainGrafis.setFocusableInTouchMode(true);
+        AlertDialog dialog = new AlertDialog.Builder(c)
+                .setTitle("Halaman Terbatas!")
+                .setMessage("Masukan kode untuk mengikuti ujian")
+                .setView(taskDesainGrafis)
+                .setPositiveButton("Oke", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskDesainGrafis.getText());
+                        // Logika ditambahkan di sini
+                        if (task.contains(kodeAksesUas)) {
+                            getKodeAkses(task, v, "UAS Desain Grafis", "uasdesaingrafis", "sekaliikutdesaingrafis");
+                        } else {
+                            getKodeAkses(task, v, "Desain Grafis", "desaingrafis", "sekaliikutdesaingrafis");
+                        }
+                    }
+                })
+                .setNegativeButton("Tutup", null)
+                .create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
     }
 
@@ -988,7 +1046,7 @@ public class Navigation_Activity extends AppCompatActivity
                                 startActivity(intent);
                             }
                         }else if(bolehAksesSoal.equals("tidak")){
-                            Toast.makeText(Navigation_Activity.this, "Anda tidak diizinkan mengikuti soal ini untuk kedua kalinya", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Navigation_Activity.this, "Nilai Anda sudah tersimpan di database (Anda terdeteksi pernah ikut)", Toast.LENGTH_LONG).show();
                             progressBar.dismiss();
                         }
                     }

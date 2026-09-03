@@ -610,18 +610,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 String deviceToken = FirebaseMessaging.getInstance().getToken().toString();
-//                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( RegisterActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-//                                    @Override
-//                                    public void onSuccess(InstanceIdResult instanceIdResult) {
-//                                        deviceToken = instanceIdResult.getToken();
-//                                        Log.e("Token",deviceToken);
-//                                    }
-//                                });
-
-                // get and link storage
-//                        if (FirebaseAuth.getInstance().getCurrentUser() == null){
-//                            mAuth.signOut();
-//                        }
                 if (task.isSuccessful()){
                     //String current_userID =  mAuth.getCurrentUser().getUid();
                     //Get datasnapshot at your "users" root node

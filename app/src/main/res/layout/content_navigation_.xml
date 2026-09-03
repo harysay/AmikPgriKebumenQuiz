@@ -337,83 +337,26 @@
 
     </LinearLayout>
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
-<!--            <Button-->
-<!--                android:id="@+id/idjarkom"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:foreground="?attr/selectableItemBackground"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:layout_margin="2dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#DCEDC8"-->
-<!--                android:drawableLeft="@drawable/jarkom"-->
-<!--                android:paddingLeft="45dp"-->
-<!--                android:text="Jaringan Komputer"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="#000"-->
-<!--                android:textSize="18sp" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/iddesaingrafis"
+                android:layout_width="0dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="200dp"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="#8CCDEB"
+                android:drawableLeft="@drawable/desaingrafis"
+                android:paddingLeft="45dp"
+                android:text="Desain Grafis"
+                android:textAllCaps="false"
+                android:textColor="#2f2e2e"
+                android:textSize="18sp" />
 
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <Button-->
-<!--                android:id="@+id/idstrukturdata"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:foreground="?attr/selectableItemBackground"-->
-<!--                android:layout_margin="2dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#BD96F3"-->
-<!--                android:drawableTop="@drawable/strukturdata"-->
-<!--                android:paddingTop="25dp"-->
-<!--                android:text="Struktur Data"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="#2f2e2e"-->
-<!--                android:textSize="18sp" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/idpemrogramaninternet"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:foreground="?attr/selectableItemBackground"-->
-<!--                android:layout_margin="2dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#b2ead6"-->
-<!--                android:drawableTop="@drawable/rpl96x96"-->
-<!--                android:paddingTop="25dp"-->
-<!--                android:text="Pemrog. Internet"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="#2f2e2e"-->
-<!--                android:textSize="18sp" />-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
-<!--            <Button-->
-<!--                android:id=""-->
-<!--                android:layout_width="0dp"-->
-<!--                android:foreground="?attr/selectableItemBackground"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:layout_margin="2dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#f3ae96"-->
-<!--                android:drawableLeft=""-->
-<!--                android:paddingLeft="45dp"-->
-<!--                android:text=""-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="#2f2e2e"-->
-<!--                android:textSize="18sp" />-->
-
-<!--        </LinearLayout>-->
+        </LinearLayout>
 
 
     </LinearLayout>

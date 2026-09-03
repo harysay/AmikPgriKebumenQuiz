@@ -22,9 +22,9 @@ android {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.harysaydev.amikpgrikbmquiz"
         minSdk 23
-        targetSdk 34
-        versionCode 33
-        versionName "b33.12112024"
+        targetSdk 35
+        versionCode 36
+        versionName "b36.09072025"
         multiDexEnabled true
     }
 
@@ -34,14 +34,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
-            proguardFile 'D:/HARI/Kampus/Aplikasi/AmikPgriKebQuiz/app/proguard-android.txt'
+            proguardFile '/Users/harysay/StudioProjects/AmikPgriKebumenQuiz/app/proguard-android.txt'
         }
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
-            proguardFile 'D:/HARI/Kampus/Aplikasi/AmikPgriKebQuiz/app/proguard-android.txt'
+            proguardFile '/Users/harysay/StudioProjects/AmikPgriKebumenQuiz/app/proguard-android.txt'
         }
     }
     packagingOptions {
